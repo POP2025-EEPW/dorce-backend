@@ -1,0 +1,28 @@
+package project.dorce;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@SpringBootApplication
+public class DorceApplication {
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @RequestMapping("/")
+    String home(){
+        var allTests = testRepository.save(new Test("xd"));
+
+        return "You saved: " + allTests.name;
+    }
+
+
+    public static void main(String[] args) {
+        SpringApplication.run(DorceApplication.class, args);
+    }
+
+}
