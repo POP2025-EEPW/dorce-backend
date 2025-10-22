@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NonNull;
 import project.dorce.usermanager.Role;
 
+import java.util.List;
+
 @Data
 public class UserRegistrationRequest {
     @NonNull
@@ -16,6 +18,5 @@ public class UserRegistrationRequest {
     private String password;
 
     @NonNull
-    @NotBlank
-    private Role role;
+    private List<Role> roles;
 }
