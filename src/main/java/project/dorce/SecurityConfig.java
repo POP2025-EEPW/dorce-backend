@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/datasets").hasAuthority("MetadataManager")
+                        .requestMatchers(HttpMethod.POST, "/api/catalogs").hasAuthority("MetadataManager")
                         .anyRequest().permitAll()
                 );
 
