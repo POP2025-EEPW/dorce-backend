@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import project.dorce.usermanager.dto.UserRegistrationRequest;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,8 +30,12 @@ public class UserService {
 
         final var authToken = generateAuthToken();
 
-        final var user = new User(request.getUsername(), encodedPassword, Role.DataUser, authToken);
+        final var user = new User(request.getUsername(), encodedPassword, List.of(Role.DataUser), authToken);
 
         return userRepository.save(user);
+    }
+
+    public User getUserByAuthToken(String authToken){
+        return userRepository.findByAuthToken(authToken);
     }
 }

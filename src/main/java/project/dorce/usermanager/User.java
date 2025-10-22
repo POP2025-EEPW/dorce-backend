@@ -3,6 +3,7 @@ package project.dorce.usermanager;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,16 +24,16 @@ public class User {
     private String authToken;
 
     @Column(nullable = false)
-    private Role role;
+    private List<Role> roles;
 
     public User(){
 
     }
 
-    public User(String username, String password, Role role, String authToken) {
+    public User(String username, String password, List<Role> roles, String authToken) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
         this.authToken = authToken;
     }
 }
