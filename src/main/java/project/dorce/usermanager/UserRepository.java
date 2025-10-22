@@ -1,4 +1,4 @@
-package project.dorce.users;
+package project.dorce.usermanager;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

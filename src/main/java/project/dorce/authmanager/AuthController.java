@@ -1,4 +1,4 @@
-package project.dorce.users;
+package project.dorce.authmanager;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,21 +8,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.dorce.users.dto.UserRegistrationRequest;
+import project.dorce.authmanager.dto.AuthRequest;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
     @Autowired
-    UserService userService;
+    AuthService authService;
 
-    @PostMapping
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request){
+    @PostMapping("/login")
+    public ResponseEntity<?> authUser(@Valid @RequestBody AuthRequest request){
         try{
-            userService.registerNewUser(request);
-
-            return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+            return ResponseEntity.ok(authService.authUser(request));
         }catch(Exception ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }

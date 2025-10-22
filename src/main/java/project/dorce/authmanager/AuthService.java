@@ -1,10 +1,10 @@
-package project.dorce.auth;
+package project.dorce.authmanager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
-import project.dorce.auth.dto.AuthRequest;
-import project.dorce.users.UserRepository;
+import project.dorce.authmanager.dto.AuthRequest;
+import project.dorce.usermanager.UserRepository;
 
 @Service
 public class AuthService {

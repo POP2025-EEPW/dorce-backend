@@ -1,4 +1,4 @@
-package project.dorce.users;
+package project.dorce.usermanager;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,13 +22,17 @@ public class User {
     @Column(unique = true, nullable = false)
     private String authToken;
 
+    @Column(nullable = false)
+    private Role role;
+
     public User(){
 
     }
 
-    public User(String username, String password, String authToken) {
+    public User(String username, String password, Role role, String authToken) {
         this.username = username;
         this.password = password;
+        this.role = role;
         this.authToken = authToken;
     }
 }

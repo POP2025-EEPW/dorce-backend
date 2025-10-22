@@ -1,11 +1,12 @@
-package project.dorce.auth.dto;
+package project.dorce.usermanager.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NonNull;
+import project.dorce.usermanager.Role;
 
 @Data
-public class AuthRequest {
+public class UserRegistrationRequest {
     @NonNull
     @NotBlank
     private String username;
@@ -13,4 +14,8 @@ public class AuthRequest {
     @NonNull
     @NotBlank
     private String password;
+
+    @NonNull
+    @NotBlank
+    private Role role;
 }

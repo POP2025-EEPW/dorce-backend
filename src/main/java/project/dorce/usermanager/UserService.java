@@ -1,7 +1,7 @@
-package project.dorce.users;
+package project.dorce.usermanager;
 
 import org.springframework.stereotype.Service;
-import project.dorce.users.dto.UserRegistrationRequest;
+import project.dorce.usermanager.dto.UserRegistrationRequest;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class UserService {
 
         final var authToken = generateAuthToken();
 
-        final var user = new User(request.getUsername(), encodedPassword, authToken);
+        final var user = new User(request.getUsername(), encodedPassword, Role.DataUser, authToken);
 
         return userRepository.save(user);
     }
