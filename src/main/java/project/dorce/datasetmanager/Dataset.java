@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table(name = "datasets")
 public class Dataset {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
