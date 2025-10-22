@@ -29,10 +29,11 @@ public class AuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader != null && authHeader.startsWith("Token ")){
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
             String authToken = authHeader.substring(7);
 
             User user = userService.getUserByAuthToken(authToken);
+
             if(user == null){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;

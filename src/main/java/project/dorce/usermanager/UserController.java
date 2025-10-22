@@ -21,8 +21,7 @@ public class UserController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request){
         try{
             userService.registerNewUser(request);
-
-            return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+            return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
         }catch(Exception ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }

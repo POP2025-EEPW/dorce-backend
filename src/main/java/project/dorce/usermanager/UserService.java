@@ -30,7 +30,7 @@ public class UserService {
 
         final var authToken = generateAuthToken();
 
-        final var user = new User(request.getUsername(), encodedPassword, List.of(Role.DataUser), authToken);
+        final var user = new User(request.getUsername(), encodedPassword, request.getRoles(), authToken);
 
         return userRepository.save(user);
     }

@@ -18,7 +18,7 @@ public class DatasetController {
     @Autowired
     private DatasetService datasetService;
 
-    @SecurityRequirement(name = "Token")
+    @SecurityRequirement(name = "AuthToken")
     @PostMapping
     public ResponseEntity<?> addDataset(@Valid @RequestBody DatasetCreationRequest dataset){
         try{

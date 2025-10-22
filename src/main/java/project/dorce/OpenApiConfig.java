@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Dorce API"))
 @SecurityScheme(
-        name = "Token",
+        name = "AuthToken",
         type = SecuritySchemeType.HTTP,
         scheme = "bearer",
-        bearerFormat = "UUID/Custom",
-        description = "Custom Authorization header using the 'Token' scheme. Header format: Token {UUID/Token}"
+        bearerFormat = "Bearer",
+        description = "Custom Authorization header using the 'Bearer' scheme. Header format: Bearer {UUID/Token}"
 )
 public class OpenApiConfig {
 
