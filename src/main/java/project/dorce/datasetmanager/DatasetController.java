@@ -21,13 +21,8 @@ public class DatasetController {
     @SecurityRequirement(name = "AuthToken")
     @PostMapping
     public ResponseEntity<?> addDataset(@Valid @RequestBody DatasetCreationRequest dataset){
-        try{
-            datasetService.addDataset(dataset);
-
-            return new ResponseEntity<>("Dataset added successfully", HttpStatus.CREATED);
-        }catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+            final var result = datasetService.addDataset(dataset);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
