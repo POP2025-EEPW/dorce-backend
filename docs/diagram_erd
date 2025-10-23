@@ -1,0 +1,36 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id UUID [primary key]
+  username varchar
+  password varchar
+  authToken varchar 
+  roles smallint[]
+}
+
+Table catalogs {
+  id UUID [primary key]
+  description varchar
+  title varchar
+  issued date
+  modified date
+  parent_id uuid
+}
+
+Table datasets {
+  id UUID
+  title varchar
+  description varchar
+}
+
+Table catalogs_datasets {
+  catalog_id UUID [ref: - catalogs.id]
+  datasets_id UUID [ref: - datasets.id]
+}
+
+// Ref user_posts: posts.user_id > users.id // many-to-one
+
+// Ref: users.id < follows.following_user_id
+
+// Ref: users.id < follows.followed_user_id
