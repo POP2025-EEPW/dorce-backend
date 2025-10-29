@@ -7,10 +7,6 @@ import java.util.UUID;
 
 @Data
 public class AddDatasetCommentRequest {
-    @NonNull
     @NotBlank
     private String content;
-
-    @NonNull
-    private UUID datasetId;
 }
