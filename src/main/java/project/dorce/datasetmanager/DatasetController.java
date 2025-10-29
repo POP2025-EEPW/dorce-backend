@@ -33,4 +33,15 @@ public class DatasetController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping()
+    public ResponseEntity<?> listOwnedDatasets(
+        @RequestParam UUID userId
+    ){
+        try{
+            return ResponseEntity.ok(datasetService.listOwnedDatasets(userId));
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
