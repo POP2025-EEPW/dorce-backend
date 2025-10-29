@@ -1,4 +1,4 @@
-package project.dorce.datasetmanager;
+package project.dorce.dataqualitymanager;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,8 +8,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.dorce.datasetmanager.dto.AddDatasetCommentRequest;
-import project.dorce.datasetmanager.dto.DatasetCommentDto;
+import project.dorce.dataqualitymanager.dto.AddDatasetCommentRequest;
+import project.dorce.dataqualitymanager.dto.DatasetCommentDto;
+import project.dorce.datasetmanager.DatasetService;
 import project.dorce.usermanager.UserService;
 import project.dorce.utils.ResourceNotFoundException;
 
