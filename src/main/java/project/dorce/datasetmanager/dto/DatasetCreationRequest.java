@@ -13,4 +13,7 @@ public class DatasetCreationRequest {
     @NonNull
     @NotBlank
     private String description;
+
+    @NonNull
+    private Boolean qualityControllable;
 }

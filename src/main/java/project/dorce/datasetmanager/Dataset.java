@@ -19,6 +19,9 @@ public class Dataset {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private Boolean qualityControllable;
+
     public Dataset() {}
 
     public Dataset(String title, String description) {

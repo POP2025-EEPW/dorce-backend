@@ -21,7 +21,7 @@ public class DatasetService {
     }
 
     public Dataset addDataset(DatasetCreationRequest dataset){
-        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription());
+        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription(), dataset.getQualityControllable());
         return datasetRepository.save(newDataset);
     }
 
