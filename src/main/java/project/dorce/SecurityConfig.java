@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/datasets/*/entries").hasAuthority("MetadataManager")
                         .requestMatchers(HttpMethod.PUT, "/api/datasets/*/entries/*").hasAuthority("MetadataManager")
                         .requestMatchers(HttpMethod.POST, "/api/datasets/*/comments").hasAuthority("MetadataManager")
+                        .requestMatchers(HttpMethod.POST, "/api/datasets/*/requests").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/datasets/*/requests").hasAuthority("MetadataManager")
                         .requestMatchers(HttpMethod.POST, "/api/catalogs").hasAuthority("MetadataManager")
                         .anyRequest().permitAll()
                 );
