@@ -34,6 +34,7 @@ public class DatasetController {
         }
     }
 
+    @SecurityRequirement(name = "AuthToken")
     @GetMapping("/qualityControllable")
     public ResponseEntity<?> getQualityControllableDatasets(){
         try{
