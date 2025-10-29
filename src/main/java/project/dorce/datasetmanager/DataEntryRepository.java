@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface DataEntryRepository extends JpaRepository<DataEntry, UUID> {
     Optional<DataEntry> findByIdAndDataset(UUID id, Dataset dataset);
+    Page<DataEntry> findByDataset(Dataset dataset, Pageable pageable);
+    long countByDataset(Dataset dataset);
 }
