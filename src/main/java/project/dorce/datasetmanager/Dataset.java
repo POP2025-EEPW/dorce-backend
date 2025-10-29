@@ -19,10 +19,14 @@ public class Dataset {
     @Column(nullable = false)
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Schema schema;
+
     public Dataset() {}
 
-    public Dataset(String title, String description) {
+    public Dataset(String title, String description, Schema schema) {
         this.title = title;
         this.description = description;
+        this.schema = schema;
     }
 }

@@ -13,4 +13,8 @@ public class DatasetCreationRequest {
     @NonNull
     @NotBlank
     private String description;
+
+    @NonNull
+    @NotBlank
+    private UUID schemaId;
 }

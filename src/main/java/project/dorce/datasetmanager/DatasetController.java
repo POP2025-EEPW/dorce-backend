@@ -25,6 +25,16 @@ public class DatasetController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> setDataSchema(@PathVariable UUID id, @RequestBody Schema schema){
+        try{
+            datasetService.setDataSchema(id, schema.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getDataset(@PathVariable UUID id){
         try{
