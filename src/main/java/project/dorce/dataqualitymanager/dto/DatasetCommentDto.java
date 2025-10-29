@@ -1,7 +1,7 @@
-package project.dorce.datasetmanager.dto;
+package project.dorce.dataqualitymanager.dto;
 
 import lombok.Data;
-import project.dorce.datasetmanager.DatasetComment;
+import project.dorce.dataqualitymanager.DatasetComment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

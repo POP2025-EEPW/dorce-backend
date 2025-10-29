@@ -1,4 +1,4 @@
-package project.dorce.datasetmanager.dto;
+package project.dorce.dataqualitymanager.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
