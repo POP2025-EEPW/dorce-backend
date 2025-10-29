@@ -1,0 +1,12 @@
+package project.dorce.datasetmanager;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface DataEntryRepository extends JpaRepository<DataEntry, UUID> {
+    Page<DataEntry> findByDataset(Dataset dataset, Pageable pageable);
+    long countByDataset(Dataset dataset);
+}

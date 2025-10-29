@@ -18,6 +18,9 @@ public class DatasetController {
     @Autowired
     private DatasetService datasetService;
 
+    @Autowired
+    private DatasetPreviewService datasetPreviewService;
+
     @SecurityRequirement(name = "AuthToken")
     @PostMapping
     public ResponseEntity<?> addDataset(@Valid @RequestBody DatasetCreationRequest dataset){
@@ -31,6 +34,21 @@ public class DatasetController {
             return ResponseEntity.ok(datasetService.getDataset(id));
         }catch(ResourceNotFoundException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{id}/preview")
+    public ResponseEntity<?> getDatasetPreview(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "5") Integer sampleSize
+    ) {
+        try {
+            final var preview = datasetPreviewService.getDatasetPreview(id, sampleSize);
+            return ResponseEntity.ok(preview);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
