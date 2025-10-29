@@ -25,4 +25,7 @@ public class DatasetService {
         return datasetRepository.save(newDataset);
     }
 
+    public List<Dataset> getQualityControllableDatasets(){
+        return datasetRepository.findByQualityControllableTrue();
+    }
 }

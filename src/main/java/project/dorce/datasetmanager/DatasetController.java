@@ -33,4 +33,14 @@ public class DatasetController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/qualityControllable")
+    public ResponseEntity<?> getQualityControllableDatasets(){
+        try{
+            return ResponseEntity.ok(datasetService.getQualityControllableDatasets());
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
