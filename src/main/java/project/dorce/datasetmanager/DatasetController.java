@@ -33,4 +33,14 @@ public class DatasetController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editDataset(@PathVariable UUID id, @Valid @RequestBody DatasetEditionRequest dataset){
+        try{
+            datasetService.editDataset(id, dataset);
+            return ResponseEntity.ok().build();
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
