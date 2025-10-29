@@ -25,4 +25,11 @@ public class DatasetService {
         return datasetRepository.save(newDataset);
     }
 
+    public DatasetDescription getDatasetDescription(UUID id) {
+        var dataset = datasetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Dataset not found."));
+        return DatasetDescription.builder()
+                .description(dataset.getDescription())
+                .build();
+    }
+
 }

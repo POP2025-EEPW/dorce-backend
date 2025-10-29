@@ -33,4 +33,14 @@ public class DatasetController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/{id}/description")
+    public ResponseEntity<?> getDatasetDescription(@PathVariable UUID id){
+        try{
+            return ResponseEntity.ok(datasetService.getDatasetDescription(id));
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
