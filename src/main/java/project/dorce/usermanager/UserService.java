@@ -38,4 +38,8 @@ public class UserService {
     public User getUserByAuthToken(String authToken){
         return userRepository.findByAuthToken(authToken);
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
