@@ -15,12 +15,35 @@ class DatasetController{
 - datasetService : DatasetService
 + addDataset(dataset : DatasetCreationRequest) : ResponseEntity<?>
 + getDataset(id : UUID) : ResponseEntity<?>
++ editDataset(id : UUID, dataset : DatasetEditionRequest) : ResponseEntity<?>
++ getDatasetDescription(id : UUID) : ResponseEntity<?>
++ listDatasets(title : String, page : Integer, pageSize : Integer) : ResponseEntity<?>
++ listOwnedDatasets(userId : UUID) : ResponseEntity<?>
++ getQualityControllableDatasets() : ResponseEntity<?>
++ setDataSchema(id : UUID, schema : Schema) : ResponseEntity<?>
 }
 class AddCatalogRequest{
 - parentCatalogId : UUID
 - catalog : CatalogDto
 }
 class DatasetCreationRequest{
+- title : String
+- description : String
+- qualityControllable : Boolean
+- schemaId : UUID
+}
+class DatasetEditionRequest{
+- title : String
+- description : String
+}
+class DatasetFilter{
+- title : String
+}
+class DatsetDescription{
+- description : String
+}
+class DatasetSummary{
+- id : UUID
 - title : String
 - description : String
 }
@@ -36,9 +59,17 @@ class AuthFilter{
 AuthFilter --|> OncePerRequestFilter
 class DatasetService{
 - datasetRepository : DatasetRepository
+- userService : UserService
++ addDataset(dataser: DatasetCreationRequest, authToken AuthToken, qualityControllable : Boolean) : Dataset
 + DatasetService(datasetRepository : DatasetRepository)
 + getDataset(id : UUID) : Dataset
 + addDataset(dataset : DatasetCreationRequest) : Dataset
++ editDataset(id : UUID, dataset : DatasetEditionRequest)
++ getDatasetDescription(id : UUID) : String
++ listDatasets(filter : DatasetFilter, page : Integer, pageSize : Integer) : List<DatasetSummary>
++ listOwneredDatasets(userId : UUID) : List<DatasetSummary>
++ getQualityControllableDatasets() : List<DatasetSummary>
++ setDataSchema(datasetId : UUID, schemaId : UUID) : Dataset
 }
 class CatalogController{
 catalogService : CatalogService
@@ -52,8 +83,35 @@ class Dataset{
 - id : UUID
 - title : String
 - description : String
+- owner : User
+- qualityControllable : Boolean
+- schema : Schema
 + Dataset()
-+ Dataset(title : String, description : String)
++ Dataset(title : String, description : String, owner : User, qualityControllable : Boolean, schema : Schema)
+}
+class Comment{
+- id : UUID
+- content : String
+- dataset : Dataset
++ Comment()
++ Comment(content : String, dataset : Dataset)
+}
+class CommentController{
+- commentService : CommentService
++ addDatasetComment(datasetId : UUID, content : String) : ResponseEntity<?>
+}
+class CommentService{
+- commentRepository : CommentRepository
++ CommentService(commentRepository : CommentRepository)
++ addDatasetcomment(datasetId : UUID, content : String) : Comment
+}
+class Schema{
+- id : UUID
++ Schema()
+}
+class addDatasetCommentRequest{
+- content : String
+- datasetId : UUID
 }
 class UserService{
 - userRepository : UserRepository
@@ -148,11 +206,20 @@ findByAuthToken(authToken : String) : User
 }
 UserRepository --|> JpaRepository
 interface DatasetRepository{
++ findByOwner(user : Owner) : List<Dataset>
 }
 DatasetRepository --|> JpaRepository
 interface TestRepository{
++ findQualityControllableTrue() : List<Dataset>
 }
 TestRepository --|> JpaRepository
+interface CommentRepository{
+}
+CommentRepository --|> JpaRepository
+interface SchemaRepository{
++ findByIdEquals(id : UUID) : Schema
+}
+SchemaRepository --|> JpaRepository
 enum Role{
 MetadataManager
 AcquisitionAppManager

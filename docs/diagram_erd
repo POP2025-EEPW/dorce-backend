@@ -22,6 +22,9 @@ Table datasets {
   id UUID
   title varchar
   description varchar
+  quality_controllable boolean
+  owner_id UUID
+  schema_id UUID
 }
 
 Table catalogs_datasets {
@@ -29,8 +32,24 @@ Table catalogs_datasets {
   datasets_id UUID [ref: - datasets.id]
 }
 
+Table schemas {
+  id UUID [primary key]
+}
+
+Table comments {
+  id UUID [primary key]
+  content varchar
+  dataset_id UUID
+}
+
 // Ref user_posts: posts.user_id > users.id // many-to-one
 
 // Ref: users.id < follows.following_user_id
 
 // Ref: users.id < follows.followed_user_id
+
+// Ref: datasets.owner_id > users.id
+
+// Ref: datasets.schema_id > schemas.id
+
+// Ref: comments.dataset_id > datasets.id
