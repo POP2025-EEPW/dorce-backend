@@ -195,6 +195,12 @@ CatalogService--"- catalogRepository" CatalogRepository
 AuthController--"authService" AuthService
 UserController--"userService" UserService
 Catalog--"- parent" Catalog
+CommentController--"- commentService" CommentService
+CommentService--"- commentRepository" CommentRepository
+Comment --"- dataset" Dataset
+Dataset --"- schema" Schema
+Dataset --"- owner" User
+Dataset --"- parent" Catalog
 interface CatalogRepository{
 findAllByParentIsNull() : List<Catalog>
 findAllByParent(parent : Catalog) : List<Catalog>
