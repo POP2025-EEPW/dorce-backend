@@ -23,8 +23,8 @@ Table datasets {
   title varchar
   description varchar
   quality_controllable boolean
-  owner_id UUID
-  schema_id UUID
+  owner_id UUID [ref: - users.id]
+  schema_id UUID [ref: - schemas.id]
 }
 
 Table catalogs_datasets {
@@ -39,7 +39,7 @@ Table schemas {
 Table comments {
   id UUID [primary key]
   content varchar
-  dataset_id UUID
+  dataset_id UUID [ref: - datasets.id]
 }
 
 // Ref user_posts: posts.user_id > users.id // many-to-one
