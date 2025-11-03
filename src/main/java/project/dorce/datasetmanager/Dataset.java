@@ -25,6 +25,9 @@ public class Dataset {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
+    @Column(nullable = false)
+    private Boolean qualityControllable;
+
     public Dataset() {}
 
     public Dataset(String title, String description, User owner) {

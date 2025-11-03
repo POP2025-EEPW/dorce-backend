@@ -37,6 +37,7 @@ public class DatasetController {
         }
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<?> editDataset(@PathVariable UUID id, @Valid @RequestBody DatasetEditionRequest dataset){
         try{
@@ -70,4 +71,13 @@ public class DatasetController {
         return ResponseEntity.ok(result);
     }
 
+    @SecurityRequirement(name = "AuthToken")
+    @GetMapping("/qualityControllable")
+    public ResponseEntity<?> getQualityControllableDatasets(){
+        try{
+            return ResponseEntity.ok(datasetService.getQualityControllableDatasets());
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

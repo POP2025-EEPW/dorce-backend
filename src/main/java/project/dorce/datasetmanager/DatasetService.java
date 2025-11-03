@@ -71,4 +71,13 @@ public class DatasetService {
                 .map(dataset -> new DatasetSummary(dataset.getId(), dataset.getTitle(), dataset.getDescription()))
                 .collect(Collectors.toList());
     }
+
+    public Dataset addDataset(DatasetCreationRequest dataset){
+        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription(), dataset.getQualityControllable());
+        return datasetRepository.save(newDataset);
+    }
+
+    public List<Dataset> getQualityControllableDatasets(){
+        return datasetRepository.findByQualityControllableTrue();
+    }
 }

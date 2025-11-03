@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface DatasetRepository extends JpaRepository<Dataset, UUID> {
 	Page<Dataset> findByTitleContainingIgnoreCase(String title, Pageable pageable);
     List<Dataset> findByOwner(User owner);
+    List<Dataset> findByQualityControllableTrue();
 }
