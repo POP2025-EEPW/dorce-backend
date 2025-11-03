@@ -47,6 +47,16 @@ public class DatasetController {
         }
     }
     
+    @GetMapping()
+    public ResponseEntity<?> listOwnedDatasets(
+        @RequestParam UUID userId
+    ){
+        try{
+            return ResponseEntity.ok(datasetService.listOwnedDatasets(userId));
+        }catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @GetMapping
     public ResponseEntity<?> listDatasets(
@@ -59,5 +69,5 @@ public class DatasetController {
         List<?> result = datasetService.listDatasets(filter, page, pageSize);
         return ResponseEntity.ok(result);
     }
-    
+
 }
