@@ -23,6 +23,8 @@ public class DatasetService {
 
     private DatasetRepository datasetRepository;
 
+    private SchemaRepository schemaRepository;
+
     @Autowired
     private UserService userService;
 
@@ -35,7 +37,7 @@ public class DatasetService {
     }
 
     public Dataset addDataset(DatasetCreationRequest dataset, AuthToken authToken){
-        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription(), userService.getUserByAuthToken(authToken.getToken()));
+        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription(), userService.getUserByAuthToken(authToken.getToken()), schemaRepository.findByIdEquals(dataset.getSchemaId()), dataset.getQualityControllable());
         return datasetRepository.save(newDataset);
     }
 

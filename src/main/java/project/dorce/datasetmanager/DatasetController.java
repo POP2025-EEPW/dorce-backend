@@ -28,7 +28,7 @@ public class DatasetController {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/schema")
     public ResponseEntity<?> setDataSchema(@PathVariable UUID id, @RequestBody Schema schema){
         try{
             datasetService.setDataSchema(id, schema.getId());
@@ -58,7 +58,7 @@ public class DatasetController {
         }
     }
     
-    @GetMapping()
+    @GetMapping("/ownedby")
     public ResponseEntity<?> listOwnedDatasets(
         @RequestParam UUID userId
     ){

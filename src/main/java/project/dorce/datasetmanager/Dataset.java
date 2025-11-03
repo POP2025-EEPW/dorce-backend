@@ -33,7 +33,7 @@ public class Dataset {
 
     public Dataset() {}
 
-    public Dataset(String title, String description, User owner, Schema schema) {
+    public Dataset(String title, String description, User owner, Schema schema, Boolean qualityControllable) {
         this.title = title;
         this.description = description;
         this.owner = owner;
