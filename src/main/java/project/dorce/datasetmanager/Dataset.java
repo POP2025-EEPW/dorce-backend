@@ -38,5 +38,6 @@ public class Dataset {
         this.description = description;
         this.owner = owner;
         this.schema = schema;
+        this.qualityControllable = qualityControllable;
     }
 }

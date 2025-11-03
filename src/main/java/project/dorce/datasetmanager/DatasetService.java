@@ -28,8 +28,9 @@ public class DatasetService {
     @Autowired
     private UserService userService;
 
-    public DatasetService(DatasetRepository datasetRepository) {
+    public DatasetService(DatasetRepository datasetRepository, SchemaRepository schemaRepository) {
         this.datasetRepository = datasetRepository;
+        this.schemaRepository = schemaRepository;
     }
 
     public Dataset getDataset(UUID id) {
@@ -37,7 +38,13 @@ public class DatasetService {
     }
 
     public Dataset addDataset(DatasetCreationRequest dataset, AuthToken authToken){
-        var newDataset = new Dataset(dataset.getTitle(), dataset.getDescription(), userService.getUserByAuthToken(authToken.getToken()), schemaRepository.findByIdEquals(dataset.getSchemaId()), dataset.getQualityControllable());
+        var newDataset = new Dataset(
+            dataset.getTitle(), 
+            dataset.getDescription(), 
+            userService.getUserByAuthToken(authToken.getToken()), 
+            schemaRepository.findById(dataset.getSchemaId()).orElseThrow(() -> new ResourceNotFoundException("Dataset not found.")), 
+            dataset.getQualityControllable()
+        );
         return datasetRepository.save(newDataset);
     }
 
