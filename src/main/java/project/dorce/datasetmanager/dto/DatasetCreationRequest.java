@@ -16,4 +16,7 @@ public class DatasetCreationRequest {
 
     @NonNull
     private Boolean qualityControllable;
+
+    @NotBlank
+    private UUID schemaId;
 }

@@ -80,4 +80,11 @@ public class DatasetService {
     public List<Dataset> getQualityControllableDatasets(){
         return datasetRepository.findByQualityControllableTrue();
     }
+
+    public void setDataSchema(UUID datasetId, UUID schemaId) {
+        Schema schema = schemaRepository.findByIdEquals(schemaId).orElseThrow(() -> new ResourceNotFoundException("Schema not found."));
+        Dataset dataset = getDataset(datasetId);
+        dataset.setSchema(schema);
+        datasetRepository.save(dataset);
+    }
 }

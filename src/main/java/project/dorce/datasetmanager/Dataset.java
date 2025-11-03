@@ -27,12 +27,16 @@ public class Dataset {
 
     @Column(nullable = false)
     private Boolean qualityControllable;
+    
+        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Schema schema;
 
     public Dataset() {}
 
-    public Dataset(String title, String description, User owner) {
+    public Dataset(String title, String description, User owner, Schema schema) {
         this.title = title;
         this.description = description;
         this.owner = owner;
+        this.schema = schema;
     }
 }
