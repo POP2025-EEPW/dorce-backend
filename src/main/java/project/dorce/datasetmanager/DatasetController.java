@@ -7,13 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dorce.datasetmanager.dto.DatasetCreationRequest;
+import project.dorce.datasetmanager.dto.DatasetFilter;
 import project.dorce.utils.ResourceNotFoundException;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/datasets")
 public class DatasetController {
+    Integer defaultPageSize = 20;
 
     @Autowired
     private DatasetService datasetService;
@@ -43,4 +46,18 @@ public class DatasetController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+    
+
+    @GetMapping
+    public ResponseEntity<?> listDatasets(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = defaultPageSize.toString()) Integer pageSize
+    ){
+        DatasetFilter filter = new DatasetFilter();
+        filter.setTitle(title);
+        List<?> result = datasetService.listDatasets(filter, page, pageSize);
+        return ResponseEntity.ok(result);
+    }
+    
 }
