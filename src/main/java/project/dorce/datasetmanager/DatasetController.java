@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dorce.datasetmanager.dto.DatasetCreationRequest;
+import project.dorce.datasetmanager.dto.DatasetEditionRequest;
 import project.dorce.datasetmanager.dto.DatasetFilter;
 import project.dorce.utils.ResourceNotFoundException;
+import project.dorce.usermanager.UserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,15 +18,17 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/datasets")
 public class DatasetController {
-    Integer defaultPageSize = 20;
 
     @Autowired
     private DatasetService datasetService;
 
     @SecurityRequirement(name = "AuthToken")
     @PostMapping
-    public ResponseEntity<?> addDataset(@Valid @RequestBody DatasetCreationRequest dataset){
-            final var result = datasetService.addDataset(dataset);
+    public ResponseEntity<?> addDataset(
+        @RequestHeader(name = "Authorization", required = false) String authorization,
+        @Valid @RequestBody DatasetCreationRequest dataset){
+            String token = UserService.extractToken(authorization);
+            final var result = datasetService.addDataset(dataset, token);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -73,7 +77,7 @@ public class DatasetController {
     public ResponseEntity<?> listDatasets(
             @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = defaultPageSize.toString()) Integer pageSize
+            @RequestParam(required = false, defaultValue = "20") Integer pageSize
     ){
         DatasetFilter filter = new DatasetFilter();
         filter.setTitle(title);

@@ -1,4 +1,4 @@
-package project.dorce.datasetmanager;
+package project.dorce.dataqualitymanager;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dorce.datasetmanager.dto.DatasetCreationRequest;
 import project.dorce.utils.ResourceNotFoundException;
+import project.dorce.dataqualitymanager.dto.AddDatasetCommentRequest;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class CommentController {
     @SecurityRequirement(name = "AuthToken")
     @PostMapping
     public ResponseEntity<?> addDatasetComment(@Valid @RequestBody AddDatasetCommentRequest addDatasetCommentRequest){
-            final var result = commentService.addComment(addDatasetCommentRequest);
+            final var result = commentService.addDatasetComment(addDatasetCommentRequest);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 

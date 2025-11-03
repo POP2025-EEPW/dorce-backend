@@ -28,7 +28,7 @@ public class Dataset {
     @Column(nullable = false)
     private Boolean qualityControllable;
     
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Schema schema;
 
     public Dataset() {}

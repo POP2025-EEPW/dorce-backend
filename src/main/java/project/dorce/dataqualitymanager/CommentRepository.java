@@ -1,4 +1,4 @@
-package project.dorce.datasetmanager;
+package project.dorce.dataqualitymanager;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

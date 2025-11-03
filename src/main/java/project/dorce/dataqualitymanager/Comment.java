@@ -1,4 +1,4 @@
-package project.dorce.datasetmanager;
+package project.dorce.dataqualitymanager;
 
 import jakarta.persistence.*;
 import lombok.Data;
