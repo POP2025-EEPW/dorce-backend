@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class DatasetCreationRequest {
+public class DatasetEditionRequest {
     @NonNull
     @NotBlank
     private String title;
@@ -13,10 +13,4 @@ public class DatasetCreationRequest {
     @NonNull
     @NotBlank
     private String description;
-
-    @NonNull
-    private Boolean qualityControllable;
-
-    @NotBlank
-    private UUID schemaId;
 }
