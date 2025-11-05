@@ -2,6 +2,7 @@ package project.dorce.dataqualitymanager;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import project.dorce.datasetmanager.Dataset;
 
 import java.util.UUID;
 

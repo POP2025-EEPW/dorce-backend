@@ -1,15 +1,10 @@
 package project.dorce.dataqualitymanager;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-import project.dorce.datasetmanager.dto.DatasetCreationRequest;
-import project.dorce.utils.ResourceNotFoundException;
 import project.dorce.datasetmanager.DatasetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import project.dorce.dataqualitymanager.AddDatasetCommentRequest;
+import project.dorce.dataqualitymanager.dto.AddDatasetCommentRequest;
 
-import java.util.UUID;
 
 @Service
 public class CommentService {
