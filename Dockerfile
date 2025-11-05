@@ -16,7 +16,7 @@ RUN mvn package -DskipTests
 
 # --- STAGE 2: Runner ---
 # Uses a lightweight JRE image to run the final JAR
-FROM openjdk:21
+FROM openjdk:21-ea-28-jdk
 WORKDIR /app
 
 # Copy the built JAR from the 'build' stage
