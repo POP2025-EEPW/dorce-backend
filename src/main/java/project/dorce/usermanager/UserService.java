@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import project.dorce.usermanager.dto.UserRegistrationRequest;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,6 +36,10 @@ public class UserService {
 
     public User getUserByAuthToken(String authToken){
         return userRepository.findByAuthToken(authToken);
+    }
+
+    public User getUserById(UUID userId){
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public static String extractToken(String authorizationHeader){

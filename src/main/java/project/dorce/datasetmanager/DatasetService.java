@@ -10,7 +10,10 @@ import project.dorce.datasetmanager.dto.DatasetCreationRequest;
 import project.dorce.datasetmanager.dto.DatasetEditionRequest;
 import project.dorce.datasetmanager.dto.DatasetFilter;
 import project.dorce.datasetmanager.dto.DatasetSummary;
+import project.dorce.usermanager.UserService;
 import project.dorce.utils.ResourceNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,12 +40,12 @@ public class DatasetService {
         return datasetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Dataset not found."));
     }
 
-    public Dataset addDataset(DatasetCreationRequest dataset, AuthToken authToken){
+    public Dataset addDataset(DatasetCreationRequest dataset, String authToken){
         var newDataset = new Dataset(
-            dataset.getTitle(), 
-            dataset.getDescription(), 
-            userService.getUserByAuthToken(authToken.getToken()), 
-            schemaRepository.findById(dataset.getSchemaId()).orElseThrow(() -> new ResourceNotFoundException("Dataset not found.")), 
+            dataset.getTitle(),
+            dataset.getDescription(),
+            userService.getUserByAuthToken(authToken),
+            schemaRepository.findById(dataset.getSchemaId()).orElseThrow(() -> new ResourceNotFoundException("Dataset not found.")),
             dataset.getQualityControllable()
         );
         return datasetRepository.save(newDataset);
