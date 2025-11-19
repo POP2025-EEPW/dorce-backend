@@ -34,6 +34,12 @@ public class DataEntry {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
+    private Boolean suspicious = false;
+
+    @Column(nullable = false)
+    private Boolean erroneous = false;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

@@ -19,12 +19,15 @@ Table catalogs {
 }
 
 Table datasets {
-  id UUID
+  id UUID [primary key]
   title varchar
   description varchar
   quality_controllable boolean
   owner_id UUID [ref: - users.id]
   schema_id UUID [ref: - schemas.id]
+  quality_tag varchar [note: 'Group 5: setQualityTag()']
+  raw_data_url text [note: 'Group 5: getRawDownloadLink()']
+  raw_data_available boolean [note: 'Group 5: checkRawAvailability()']
 }
 
 Table catalogs_datasets {
@@ -41,6 +44,40 @@ Table comments {
   content varchar
   dataset_id UUID [ref: - datasets.id]
 }
+
+Table data_entries {
+  id UUID [primary key]
+  dataset_id UUID [ref: > datasets.id]
+  content text
+  suspicious boolean [note: 'Group 5: markDataEntrySuspicious()']
+  erroneous boolean [note: 'Group 5: markDataEntryErroneous()']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table quality_validity_alerts {
+  id UUID [primary key]
+  dataset_id UUID [ref: > datasets.id]
+  alert_type varchar [note: 'SUSPICIOUS_ENTRY, ERRONEOUS_ENTRY, QUALITY_TAG_SET']
+  message text
+  severity varchar [note: 'LOW, MEDIUM, HIGH']
+  resolved boolean
+  created_at timestamp
+  
+  Note: 'Group 5: listQualityValidityAlerts()'
+}
+
+Table raw_data_batches {
+  id UUID [primary key]
+  dataset_id UUID [ref: > datasets.id]
+  batch_name varchar
+  data_url text
+  size_in_bytes bigint
+  uploaded_at timestamp
+  
+  Note: 'Group 5: getRawDownloadLink(), checkRawAvailability()'
+}
+
 
 // Ref user_posts: posts.user_id > users.id // many-to-one
 
