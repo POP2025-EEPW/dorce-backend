@@ -31,6 +31,15 @@ public class Dataset {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Schema schema;
 
+    @Column
+    private String qualityTag;
+
+    @Column
+    private String rawDataUrl;
+
+    @Column(nullable = false)
+    private Boolean rawDataAvailable = false;
+
     public Dataset() {}
 
     public Dataset(String title, String description, User owner, Schema schema, Boolean qualityControllable) {
