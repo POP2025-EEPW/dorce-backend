@@ -13,7 +13,7 @@ import project.dorce.dataqualitymanager.dto.AddDatasetCommentRequest;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/quality")
+@RequestMapping("/api/datasets/{datasetId}/quality")
 public class CommentController {
 
     @Autowired
@@ -21,8 +21,10 @@ public class CommentController {
 
     @SecurityRequirement(name = "AuthToken")
     @PostMapping
-    public ResponseEntity<?> addDatasetComment(@Valid @RequestBody AddDatasetCommentRequest addDatasetCommentRequest){
-            final var result = commentService.addDatasetComment(addDatasetCommentRequest);
+    public ResponseEntity<?> addDatasetComment(
+            @PathVariable UUID datasetId,
+            @Valid @RequestBody AddDatasetCommentRequest addDatasetCommentRequest){
+            final var result = commentService.addDatasetComment(datasetId, addDatasetCommentRequest);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
