@@ -9,4 +9,7 @@ import java.util.UUID;
 public class AddDatasetCommentRequest {
     @NotBlank
     private String content;
+    
+    @NonNull
+    private UUID datasetId;
 }

@@ -47,6 +47,8 @@ public class UserService {
             return null;
         }
         return authorizationHeader.substring(7);
+    }
+
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
