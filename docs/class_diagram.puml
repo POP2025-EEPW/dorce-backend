@@ -21,6 +21,13 @@ class DatasetController{
 + listOwnedDatasets(userId : UUID) : ResponseEntity<?>
 + getQualityControllableDatasets() : ResponseEntity<?>
 + setDataSchema(id : UUID, schema : Schema) : ResponseEntity<?>
++ submitDataset(id : UUID) : ResponseEntity<?>
++ publishDataset(id : UUID) : ResponseEntity<?>
++ archiveDataset(id : UUID) : ResponseEntity<?>
++ registerRawDataset(datasetId : UUID, request : RegisterRawDatasetRequest) : ResponseEntity<?>
++ getRawDataset(datasetId : UUID) : ResponseEntity<?>
++ appendRawBatch(datasetId : UUID, request : AppendBatchRequest) : ResponseEntity<?>
++ listRawBatches(datasetId : UUID, pageable : Pageable) : ResponseEntity<?>
 }
 class AddCatalogRequest{
 - parentCatalogId : UUID
@@ -51,6 +58,12 @@ class ResourceNotFoundException{
 + ResourceNotFoundException(message : String)
 }
 ResourceNotFoundException --|> RuntimeException
+
+class InvalidDatasetStatusException{
++ InvalidDatasetStatusException(message : String)
+}
+InvalidDatasetStatusException --|> RuntimeException
+
 class AuthFilter{
 - userService : UserService
 + AuthFilter(userService : UserService)
@@ -60,6 +73,9 @@ AuthFilter --|> OncePerRequestFilter
 class DatasetService{
 - datasetRepository : DatasetRepository
 - userService : UserService
+- rawDatasetRepository : RawDatasetRepository
+- rawDataBatchRepository : RawDataBatchRepository
+- schemaRepository : SchemaRepository
 + addDataset(dataser: DatasetCreationRequest, authToken AuthToken, qualityControllable : Boolean) : Dataset
 + DatasetService(datasetRepository : DatasetRepository)
 + getDataset(id : UUID) : Dataset
@@ -70,7 +86,15 @@ class DatasetService{
 + listOwneredDatasets(userId : UUID) : List<DatasetSummary>
 + getQualityControllableDatasets() : List<DatasetSummary>
 + setDataSchema(datasetId : UUID, schemaId : UUID) : Dataset
++ submitDataset(id : UUID) : Dataset
++ publishDataset(id : UUID) : Dataset
++ archiveDataset(id : UUID) : Dataset
++ registerRawDataset(datasetId : UUID, request : RegisterRawDatasetRequest) : RawDataset
++ getRawDatasetByDatasetId(datasetId : UUID) : RawDataset
++ appendRawBatch(datasetId : UUID, request : AppendBatchRequest) : RawDataBatch
++ listRawBatches(datasetId : UUID, pageable : Pageable) : Page<RawDataBatch>
 }
+
 class CatalogController{
 catalogService : CatalogService
 datasetService : DatasetService
@@ -79,6 +103,7 @@ datasetService : DatasetService
 + getCatalog(catalogId : UUID) : ResponseEntity<?>
 + getCatalogDatasets(catalogId : UUID, page : Integer, pageSize : Integer) : ResponseEntity<?>
 }
+
 class Dataset{
 - id : UUID
 - title : String
@@ -86,9 +111,19 @@ class Dataset{
 - owner : User
 - qualityControllable : Boolean
 - schema : Schema
+- status : DatasetStatus
+- qualityTag : String
 + Dataset()
 + Dataset(title : String, description : String, owner : User, qualityControllable : Boolean, schema : Schema)
 }
+
+enum DatasetStatus {
+DRAFT
+SUBMITTED
+ACTIVE
+DELETED
+}
+
 class Comment{
 - id : UUID
 - content : String
@@ -181,6 +216,127 @@ class CatalogDto{
 - title : String
 - datasets : List<UUID>
 }
+
+class RawDataset {
+- id : UUID
+- dataset : Dataset
+- resourceUri : String
+- registeredAt : LocalDateTime
+- batches : List<RawDataBatch>
+}
+
+class RawDataBatch {
+- id : UUID
+- rawDataset : RawDataset
+- storageReference : String
+- batchName : String
+- sizeInBytes : Long
+- entryCount : Integer
+- appendedAt : LocalDateTime
+}
+
+class RegisterRawDatasetRequest {
+- dataUrl : String
+}
+
+class AppendBatchRequest {
+- storageReference : String
+- batchName : String
+- sizeInBytes : Long
+- entryCount : Integer
+}
+
+interface RawDatasetRepository{
++ findByDatasetId(datasetId : UUID) : Optional<RawDataset>
+}
+RawDatasetRepository --|> JpaRepository
+
+interface RawDataBatchRepository{
++ findByRawDatasetId(rawDatasetId : UUID, pageable : Pageable) : Page<RawDataBatch>
+}
+RawDataBatchRepository --|> JpaRepository
+
+class QualityManagementController {
+- qualityManagementService : QualityManagementService
++ markDataEntrySuspicious(entryId : UUID) : ResponseEntity<?>
++ markDataEntryErroneous(entryId : UUID) : ResponseEntity<?>
++ getRawDownloadLink(datasetId : UUID) : ResponseEntity<?>
++ checkRawAvailability(datasetId : UUID) : ResponseEntity<?>
++ setQualityTag(datasetId : UUID, request : SetQualityTagRequest) : ResponseEntity<?>
++ listQualityValidityAlerts(datasetId : UUID, unresolvedOnly : Boolean) : ResponseEntity<?>
++ listRawBatches(datasetId : UUID) : ResponseEntity<?>
+}
+
+class QualityManagementService {
+- dataEntryRepository : DataEntryRepository
+- datasetService : DatasetService
+- alertRepository : QualityValidityAlertRepository
+- rawDataBatchRepository : RawDataBatchRepository
+- rawDatasetRepository : RawDatasetRepository
++ markDataEntrySuspicious(entryId : UUID) : void
++ markDataEntryErroneous(entryId : UUID) : void
++ getRawDownloadLink(datasetId : UUID) : String
++ checkRawAvailability(datasetId : UUID) : RawDataAvailabilityResponse
++ setQualityTag(datasetId : UUID, qualityTag : String) : void
++ listQualityValidityAlerts(...) : List<QualityValidityAlertResponse>
++ listRawBatches(datasetId : UUID) : List<RawDataBatchResponse>
+}
+
+class DataEntry {
+- id : UUID
+- dataset : Dataset
+- content : String
+- suspicious : Boolean
+- erroneous : Boolean
+- createdAt : LocalDateTime
+- updatedAt : LocalDateTime
+}
+
+class QualityValidityAlert {
+- id : UUID
+- dataset : Dataset
+- alertType : String
+- message : String
+- severity : String
+- createdAt : LocalDateTime
+- resolved : Boolean
+}
+
+class SetQualityTagRequest {
+- qualityTag : String
+}
+
+class RawDataAvailabilityResponse {
+- available : Boolean
+- url : String
+}
+
+class QualityValidityAlertResponse {
+- id : UUID
+- datasetId : UUID
+- datasetTitle : String
+- alertType : String
+- message : String
+- severity : String
+- resolved : Boolean
+}
+
+class RawDataBatchResponse {
+- id : UUID
+- batchName : String
+- storageReference : String
+- dataUrl : String
+- sizeInBytes : Long
+- uploadedAt : LocalDateTime
+}
+
+interface DataEntryRepository {}
+DataEntryRepository --|> JpaRepository
+
+interface QualityValidityAlertRepository {}
+QualityValidityAlertRepository --|> JpaRepository
+
+
 SecurityConfig--"- userService" UserService
 AuthService--"userRepository" UserRepository
 DatasetController--"- datasetService" DatasetService
@@ -201,6 +357,24 @@ Comment --"- dataset" Dataset
 Dataset --"- schema" Schema
 Dataset --"- owner" User
 Dataset --"- parent" Catalog
+DatasetService --"- rawDatasetRepository" RawDatasetRepository
+DatasetService --"- rawDataBatchRepository" RawDataBatchRepository
+Dataset *-- DatasetStatus
+RawDataset -- "dataset" Dataset : 1:1
+RawDataBatch -- "rawDataset" RawDataset : N:1
+QualityManagementController --"- qualityManagementService" QualityManagementService
+QualityManagementService --"- dataEntryRepository" DataEntryRepository
+QualityManagementService --"- datasetService" DatasetService
+QualityManagementService --"- alertRepository" QualityValidityAlertRepository
+QualityManagementService --"- rawDataBatchRepository" RawDataBatchRepository
+QualityManagementService --"- rawDatasetRepository" RawDatasetRepository
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+QualityManagementController ..> SetQualityTagRequest
+QualityManagementService ..> RawDataAvailabilityResponse
+QualityManagementService ..> QualityValidityAlertResponse
+QualityManagementService ..> RawDataBatchResponse
+
 interface CatalogRepository{
 findAllByParentIsNull() : List<Catalog>
 findAllByParent(parent : Catalog) : List<Catalog>
@@ -235,4 +409,36 @@ DataUser
 AccessAppDeveloper
 Admin
 }
+
+note right of QualityManagementController
+  **REST Endpoints:**
+  POST /api/quality/entries/{entryId}/mark-suspicious
+  POST /api/quality/entries/{entryId}/mark-erroneous
+  GET /api/quality/datasets/{datasetId}/raw-download-link
+  GET /api/quality/datasets/{datasetId}/raw-availability
+  PUT /api/quality/datasets/{datasetId}/quality-tag
+  GET /api/quality/alerts
+end note
+
+note right of DataEntry
+  **Quality Flags:**
+  - suspicious: marked via markDataEntrySuspicious()
+  - erroneous: marked via markDataEntryErroneous()
+  Both trigger alert creation
+end note
+
+note right of QualityValidityAlert
+  **Alert Types:**
+  - SUSPICIOUS_ENTRY (MEDIUM)
+  - ERRONEOUS_ENTRY (HIGH)
+  - QUALITY_TAG_SET (LOW)
+end note
+
+note right of Dataset
+  **Group 5 Fields:**
+  - qualityTag: set via setQualityTag()
+  - rawDataUrl: accessed via getRawDownloadLink()
+  - rawDataAvailable: checked via checkRawAvailability()
+end note
+
 @enduml
