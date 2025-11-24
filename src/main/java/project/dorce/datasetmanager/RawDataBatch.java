@@ -38,12 +38,4 @@ public class RawDataBatch {
 
     @CreationTimestamp
     private LocalDateTime appendedAt;
-
-    public RawDataBatch(RawDataset rawDataset, String storageReference, Long sizeInBytes, Integer entryCount) {
-        this.rawDataset = rawDataset;
-        this.storageReference = storageReference;
-        this.batchName = storageReference;
-        this.sizeInBytes = sizeInBytes;
-        this.entryCount = entryCount;
-    }
 }
