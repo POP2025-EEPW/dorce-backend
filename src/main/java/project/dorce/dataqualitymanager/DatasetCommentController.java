@@ -34,6 +34,7 @@ public class DatasetCommentController {
         }
     }
 
+    @SecurityRequirement(name = "AuthToken")
     @PostMapping
     public ResponseEntity<?> addDatasetComment(
             @PathVariable UUID datasetId,
