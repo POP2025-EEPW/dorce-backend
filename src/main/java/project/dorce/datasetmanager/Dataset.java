@@ -2,10 +2,9 @@ package project.dorce.datasetmanager;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import project.dorce.usermanager.User;
 
 import java.util.UUID;
-
-import project.dorce.usermanager.User;
 
 @Data
 @Entity
@@ -40,6 +39,10 @@ public class Dataset {
     @Column(nullable = false)
     private Boolean rawDataAvailable = false;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DatasetStatus status;
+
     public Dataset() {}
 
     public Dataset(String title, String description, User owner, Schema schema, Boolean qualityControllable) {
@@ -48,5 +51,6 @@ public class Dataset {
         this.owner = owner;
         this.schema = schema;
         this.qualityControllable = qualityControllable;
+        this.status = DatasetStatus.DRAFT;
     }
 }

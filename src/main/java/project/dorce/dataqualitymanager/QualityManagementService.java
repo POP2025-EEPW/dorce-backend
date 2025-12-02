@@ -1,12 +1,12 @@
 package project.dorce.dataqualitymanager;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dorce.dataqualitymanager.dto.QualityValidityAlertResponse;
-import project.dorce.dataqualitymanager.dto.RawDataAvailabilityResponse;
-import project.dorce.dataqualitymanager.dto.RawDataBatchResponse;
-import project.dorce.datasetmanager.DataEntryRepository;
-import project.dorce.datasetmanager.DatasetService;
+import project.dorce.datasetmanager.*;
+import project.dorce.datasetmanager.dto.raw.RawDataAvailabilityResponse;
+import project.dorce.datasetmanager.dto.raw.RawDataBatchResponse;
 import project.dorce.utils.ResourceNotFoundException;
 
 import java.util.List;
@@ -21,17 +21,20 @@ public class QualityManagementService {
     private final DatasetService datasetService;
     private final QualityValidityAlertRepository alertRepository;
     private final RawDataBatchRepository rawDataBatchRepository;
+    private final RawDatasetRepository rawDatasetRepository;
 
     public QualityManagementService(
             DataEntryRepository dataEntryRepository,
             DatasetService datasetService,
             QualityValidityAlertRepository alertRepository,
-            RawDataBatchRepository rawDataBatchRepository
+            RawDataBatchRepository rawDataBatchRepository,
+            RawDatasetRepository rawDatasetRepository
     ) {
         this.dataEntryRepository = dataEntryRepository;
         this.datasetService = datasetService;
         this.alertRepository = alertRepository;
         this.rawDataBatchRepository = rawDataBatchRepository;
+        this.rawDatasetRepository = rawDatasetRepository;
     }
 
     public void markDataEntrySuspicious(UUID entryId) {
@@ -69,17 +72,14 @@ public class QualityManagementService {
     }
 
     public String getRawDownloadLink(UUID datasetId) {
-        var dataset = datasetService.getDataset(datasetId);
+        RawDataset rawDataset = rawDatasetRepository.findByDatasetId(datasetId)
+                .orElseThrow(() -> new IllegalStateException("Raw data is not registered for this dataset"));
 
-        if (!dataset.getRawDataAvailable()) {
-            throw new IllegalStateException("Raw data is not available for this dataset");
+        if (rawDataset.getResourceUri() == null || rawDataset.getResourceUri().isEmpty()) {
+            throw new IllegalStateException("Raw data URI is not configured");
         }
 
-        if (dataset.getRawDataUrl() == null || dataset.getRawDataUrl().isEmpty()) {
-            throw new IllegalStateException("Raw data URL is not configured");
-        }
-
-        return dataset.getRawDataUrl();
+        return rawDataset.getResourceUri();
     }
 
     public RawDataAvailabilityResponse checkRawAvailability(UUID datasetId) {
@@ -88,6 +88,26 @@ public class QualityManagementService {
                 dataset.getRawDataAvailable(),
                 dataset.getRawDataUrl()
         );
+    }
+
+    public List<RawDataBatchResponse> listRawBatches(UUID datasetId) {
+        var rawDataset = datasetService.getRawDatasetByDatasetId(datasetId);
+
+        var batchesPage = rawDataBatchRepository.findByRawDatasetId(
+                rawDataset.getId(),
+                Pageable.unpaged()
+        );
+
+        return batchesPage.stream()
+                .map(batch -> new RawDataBatchResponse(
+                        batch.getId(),
+                        batch.getBatchName() != null ? batch.getBatchName() : batch.getStorageReference(),
+                        batch.getStorageReference(),
+                        batch.getStorageReference(),
+                        batch.getSizeInBytes(),
+                        batch.getAppendedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     public void setQualityTag(UUID datasetId, String qualityTag) {
@@ -135,44 +155,4 @@ public class QualityManagementService {
                 ))
                 .collect(Collectors.toList());
     }
-
-    public List<RawDataBatchResponse> listRawBatches(UUID datasetId) {
-        var dataset = datasetService.getDataset(datasetId);
-        var batches = rawDataBatchRepository.findByDataset(dataset);
-
-        return batches.stream()
-                .map(batch -> new RawDataBatchResponse(
-                        batch.getId(),
-                        batch.getBatchName(),
-                        batch.getDataUrl(),
-                        batch.getSizeInBytes(),
-                        batch.getUploadedAt()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    public void registerRawDataset(UUID datasetId, String rawDataUrl) {
-        var dataset = datasetService.getDataset(datasetId);
-        dataset.setRawDataUrl(rawDataUrl);
-        dataset.setRawDataAvailable(true);
-    }
-
-    public RawDataBatchResponse appendRawBatch(UUID datasetId, String batchName, String dataUrl, Long sizeInBytes) {
-        var dataset = datasetService.getDataset(datasetId);
-
-        var batch = new RawDataBatch(dataset, batchName, dataUrl, sizeInBytes);
-        var savedBatch = rawDataBatchRepository.save(batch);
-
-        // Update dataset raw data availability
-        dataset.setRawDataAvailable(true);
-
-        return new RawDataBatchResponse(
-                savedBatch.getId(),
-                savedBatch.getBatchName(),
-                savedBatch.getDataUrl(),
-                savedBatch.getSizeInBytes(),
-                savedBatch.getUploadedAt()
-        );
-    }
 }
-
