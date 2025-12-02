@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.dorce.dataqualitymanager.dto.RawDataAvailabilityResponse;
+import project.dorce.datasetmanager.dto.raw.RawDataAvailabilityResponse;
 import project.dorce.dataqualitymanager.dto.SetQualityTagRequest;
 import project.dorce.utils.ResourceNotFoundException;
 
@@ -114,37 +114,4 @@ public class QualityManagementController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
-
-    @SecurityRequirement(name = "AuthToken")
-    @PostMapping("/datasets/{datasetId}/register-raw")
-    @Operation(summary = "Register raw dataset")
-    public ResponseEntity<?> registerRawDataset(
-            @PathVariable UUID datasetId,
-            @RequestParam String rawDataUrl
-    ) {
-        try {
-            qualityManagementService.registerRawDataset(datasetId, rawDataUrl);
-            return ResponseEntity.ok("Raw dataset registered successfully");
-        } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @SecurityRequirement(name = "AuthToken")
-    @PostMapping("/datasets/{datasetId}/raw-batches")
-    @Operation(summary = "Append raw data batch")
-    public ResponseEntity<?> appendRawBatch(
-            @PathVariable UUID datasetId,
-            @RequestParam String batchName,
-            @RequestParam String dataUrl,
-            @RequestParam(required = false) Long sizeInBytes
-    ) {
-        try {
-            var batch = qualityManagementService.appendRawBatch(datasetId, batchName, dataUrl, sizeInBytes);
-            return new ResponseEntity<>(batch, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
 }
-

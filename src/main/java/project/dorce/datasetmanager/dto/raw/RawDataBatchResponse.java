@@ -1,4 +1,4 @@
-package project.dorce.dataqualitymanager.dto;
+package project.dorce.datasetmanager.dto.raw;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +13,8 @@ import java.util.UUID;
 public class RawDataBatchResponse {
     private UUID id;
     private String batchName;
+    private String storageReference;
     private String dataUrl;
     private Long sizeInBytes;
     private LocalDateTime uploadedAt;
 }
-
