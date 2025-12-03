@@ -5,12 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.dorce.datasetmanager.dto.DataEntryRequest;
 import project.dorce.datasetmanager.dto.DataEntryResponse;
 import project.dorce.utils.ResourceNotFoundException;
@@ -61,6 +56,20 @@ public class DataEntryController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @SecurityRequirement(name = "AuthToken")
+    @GetMapping
+    public ResponseEntity<?> getAllDataEntries(@PathVariable UUID datasetId) {
+        try {
+            final var entries = dataEntryService.getAllDataEntries(datasetId);
+            final var responses = entries.stream()
+                    .map(entry -> DataEntryResponse.from(entry, objectMapper))
+                    .toList();
+            return ResponseEntity.ok(responses);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

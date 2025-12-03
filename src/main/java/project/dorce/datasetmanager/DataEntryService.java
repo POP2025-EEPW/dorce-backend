@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.dorce.datasetmanager.dto.DataEntryRequest;
 import project.dorce.utils.ResourceNotFoundException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,6 +45,11 @@ public class DataEntryService {
         final var content = serializeContent(request);
         entry.updateContent(content);
         return dataEntryRepository.save(entry);
+    }
+
+    public List<DataEntry> getAllDataEntries(UUID datasetId) {
+        final var dataset = datasetService.getDataset(datasetId);
+        return dataEntryRepository.findAllByDataset(dataset);
     }
 
     private String serializeContent(DataEntryRequest request) {
