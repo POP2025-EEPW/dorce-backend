@@ -27,6 +27,7 @@ public class AuthService {
         }
 
         return Map.of(
+                "userId", user.getId(),
                 "token", user.getAuthToken(),
                 "roles", user.getRoles()
         );
