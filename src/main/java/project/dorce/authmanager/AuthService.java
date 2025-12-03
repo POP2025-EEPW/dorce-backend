@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import project.dorce.authmanager.dto.AuthRequest;
 import project.dorce.usermanager.UserRepository;
 
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -16,7 +18,7 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public String authUser(AuthRequest request){
+    public Map<String, Object> authUser(AuthRequest request){
         var user = userRepository.findByUsername(request.getUsername());
 
         final var passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -24,6 +26,9 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid username or password");
         }
 
-        return user.getAuthToken();
+        return Map.of(
+                "token", user.getAuthToken(),
+                "roles", user.getRoles()
+        );
     }
 }
