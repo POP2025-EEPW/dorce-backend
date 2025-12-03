@@ -96,7 +96,7 @@ public class QualityManagementController {
             @RequestParam(required = false) Boolean unresolvedOnly
     ) {
         try {
-            var alerts = qualityManagementService.listQualityValidityAlerts(datasetId, unresolvedOnly);
+            var alerts = qualityManagementService.listQualityValidityAlerts(datasetId, !unresolvedOnly);
             return ResponseEntity.ok(alerts);
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
