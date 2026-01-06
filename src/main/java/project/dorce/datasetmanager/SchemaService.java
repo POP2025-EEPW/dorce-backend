@@ -35,7 +35,6 @@ public class SchemaService {
         schema.setTitle(dto.getTitle());
         schema.setDescription(dto.getDescription());
 
-        // 1. Process Concepts
         if (dto.getConcepts() != null) {
             List<Concept> concepts = new ArrayList<>();
 
