@@ -1,51 +1,69 @@
 @startuml
+DorceApplication--"- testRepository" TestRepository
 SecurityConfig--"- userService" UserService
 AuthService--"userRepository" UserRepository
-DatasetController--"- datasetService" DatasetService
 AddCatalogRequest--"- catalog" CatalogDto
 AuthFilter--"- userService" UserService
-DatasetService--"- datasetRepository" DatasetRepository
+AuthController--"authService" AuthService
+
 CatalogController--"catalogService" CatalogService
 CatalogController--"datasetService" DatasetService
-UserService--"- userRepository" UserRepository
-DorceApplication--"- testRepository" TestRepository
 CatalogService--"- catalogRepository" CatalogRepository
-AuthController--"authService" AuthService
+
 UserController--"userService" UserService
-Catalog--"- parent" Catalog
+UserService--"- userRepository" UserRepository
+
 CommentController--"- commentService" CommentService
 CommentService--"- commentRepository" CommentRepository
-Comment --"- dataset" Dataset
-Dataset --"- schema" Schema
-Dataset --"- owner" User
-Dataset --"- parent" Catalog
+
+DatasetController --"- datasetService" DatasetService
+DatasetService--"- datasetRepository" DatasetRepository
 DatasetService --"- rawDatasetRepository" RawDatasetRepository
 DatasetService --"- rawDataBatchRepository" RawDataBatchRepository
-Dataset *-- DatasetStatus
-RawDataset -- "dataset" Dataset : 1:1
-RawDataBatch -- "rawDataset" RawDataset : N:1
+
 QualityManagementController --"- qualityManagementService" QualityManagementService
+QualityManagementController ..> SetQualityTagRequest
 QualityManagementService --"- dataEntryRepository" DataEntryRepository
 QualityManagementService --"- datasetService" DatasetService
 QualityManagementService --"- alertRepository" QualityValidityAlertRepository
 QualityManagementService --"- rawDataBatchRepository" RawDataBatchRepository
 QualityManagementService --"- rawDatasetRepository" RawDatasetRepository
-DataEntry --"- dataset" Dataset
-QualityValidityAlert --"- dataset" Dataset
-QualityManagementController ..> SetQualityTagRequest
 QualityManagementService ..> RawDataAvailabilityResponse
 QualityManagementService ..> QualityValidityAlertResponse
 QualityManagementService ..> RawDataBatchResponse
+
+DataRelatedRequestController --"- service" DataRelatedRequestService
+DataRelatedRequestService --"- repository" DataRelatedRequestRepository
+DataRelatedRequestService --"- datasetService" DatasetService
+DataRelatedRequestService --"- userService" UserService
+
+DataEntryController --"- dataEntryService" DataEntryService
+DataEntryService --"- dataEntryRepository" DataEntryRepository
+DataEntryService --"- datasetService" DatasetService
+
+ResourceNotFoundException --|> RuntimeException
+InvalidDatasetStatusException --|> RuntimeException
+
+Catalog--"- parent" Catalog
+Comment --"- dataset" Dataset
+Dataset --"- schema" Schema
+Dataset --"- owner" User
+Dataset --"- parent" Catalog
+Dataset *-- DatasetStatus
+RawDataset -- "dataset" Dataset : 1:1
+RawDataBatch -- "rawDataset" RawDataset : N:1
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
 DataEntry --"- dataset" Dataset
 QualityValidityAlert --"- dataset" Dataset
 RawDataBatch --"- dataset" Dataset
-AuthFilter --|> OncePerRequestFilter
-DatasetCommentRepository -up-|> JpaRepository
-RawDatasetRepository -up-|> JpaRepository
-RawDataBatchRepository -up-|> JpaRepository
-DataRelatedRequestRepository -up-|> JpaRepository
-DataEntryRepository -up-|> JpaRepository
-QualityValidityAlertRepository -up-|> JpaRepository
+
+DatasetCommentRepository --|> JpaRepository
+RawDatasetRepository --|> JpaRepository
+RawDataBatchRepository --|> JpaRepository
+DataRelatedRequestRepository --|> JpaRepository
+DataEntryRepository --|> JpaRepository
+QualityValidityAlertRepository --|> JpaRepository
 CatalogRepository --|> JpaRepository
 UserRepository --|> JpaRepository
 DatasetRepository --|> JpaRepository
