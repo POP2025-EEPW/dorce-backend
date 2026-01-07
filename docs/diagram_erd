@@ -36,6 +36,8 @@ Table catalogs_datasets {
 
 Table schemas {
   id UUID [primary key]
+  title varchar
+  description varchar
 }
 
 Table comments {
@@ -80,4 +82,31 @@ Table raw_data_batches {
   size_in_bytes bigint
   entry_count integer
   appended_at timestamp
+}
+
+Table concepts {
+  id UUID [primary key, ref: - types.id]
+  schema_id UUID [ref: > schemas.id]
+}
+
+Table primitive_types {
+  id UUID [primary key, ref: - types.id]
+}
+
+Table constraints {
+  id UUID [primary key]
+  rule varchar
+  schema_id UUID [ref: > schemas.id]
+}
+
+Table types {
+  id UUID [primary key]
+  name varchar
+}
+
+Table properties {
+  id UUID [primary key]
+  name varchar
+  concept_id UUID [ref : > concepts.id]
+  type_id UUID [ref: > types.id]
 }
