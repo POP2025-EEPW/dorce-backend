@@ -3,6 +3,7 @@ package project.dorce.usermanager;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +33,7 @@ public class DataOwner {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_agent_id", nullable = false)
+    @JsonIgnore
     private Agent ownerAgent;
 
     @OneToMany(mappedBy = "dataOwner")
