@@ -3,6 +3,7 @@ package project.dorce.datasetmanager;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -67,6 +68,7 @@ public class Dataset {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catalog_id")
+    @JsonIgnore
     private Catalog catalog;
 
     @ManyToOne(fetch = FetchType.LAZY)
