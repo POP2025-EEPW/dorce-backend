@@ -1,0 +1,388 @@
+@startuml
+skinparam classAttributeIconSize 0
+class SecurityConfig{
+    - userService : UserService
+    + SecurityConfig(...)
+    + authFilter() : AuthFilter
+    + filterChain(http : HttpSecurity) : SecurityFilterChain
+}
+class AuthService{
+    userRepository : UserRepository
+    + AuthService(...)
+    + authUser(request : AuthRequest) : Map<String, Object>
+}
+class DatasetController{
+    - datasetService : DatasetService
+    - datasetPreviewService : DatasetPreviewService
+    + addDataset(dataset : DatasetCreationRequest) : ResponseEntity<?>
+    + getDataset(id : UUID) : ResponseEntity<?>
+    + editDataset(id : UUID, dataset : DatasetEditionRequest) : ResponseEntity<?>
+    + getDatasetDescription(id : UUID) : ResponseEntity<?>
+    + listDatasets(title : String, page : Integer, pageSize : Integer) : ResponseEntity<?>
+    + listOwnedDatasets(userId : UUID) : ResponseEntity<?>
+    + getQualityControllableDatasets() : ResponseEntity<?>
+    + setDataSchema(id : UUID, schema : Schema) : ResponseEntity<?>
+    + submitDataset(id : UUID) : ResponseEntity<?>
+    + publishDataset(id : UUID) : ResponseEntity<?>
+    + archiveDataset(id : UUID) : ResponseEntity<?>
+    + registerRawDataset(datasetId : UUID, request : RegisterRawDatasetRequest) : ResponseEntity<?>
+    + getRawDataset(datasetId : UUID) : ResponseEntity<?>
+    + appendRawBatch(datasetId : UUID, request : AppendBatchRequest) : ResponseEntity<?>
+    + listRawBatches(datasetId : UUID, pageable : Pageable) : ResponseEntity<?>
+}
+
+class DatasetPreviewService {
+    - MAX_SAMPLE_SIZE : int
+    - datasetService : DatasetService
+    - dataEntryRepository : DataEntryRepository
+    + DatasetPreviewService(...)
+    + getDatasetPreview(datasetId : UUID, sampleSize : int) : DatasetPreviewDto
+}
+
+class AddCatalogRequest{
+    - parentCatalogId : UUID
+    - catalog : CatalogDto
+}
+class DatasetCreationRequest{
+    - title : String
+    - description : String
+    - qualityControllable : Boolean
+    - schemaId : UUID
+}
+class DatasetEditionRequest{
+    - title : String
+    - description : String
+}
+class DatasetFilter{
+    - title : String
+}
+class DatsetDescription{
+    - description : String
+}
+class DatasetSummary{
+    - id : UUID
+    - title : String
+    - description : String
+}
+
+class AuthFilter{
+    - userService : UserService
+    + AuthFilter(...)
+    # doFilterInternal(request : HttpServletRequest, response : HttpServletResponse, filterChain : FilterChain) : void
+}
+AuthFilter --|> OncePerRequestFilter
+
+class DatasetService{
+    - maxPageSize : Integer
+    - defaultPageSize : Integer
+    - datasetRepository : DatasetRepository
+    - userService : UserService
+    - rawDatasetRepository : RawDatasetRepository
+    - rawDataBatchRepository : RawDataBatchRepository
+    - schemaRepository : SchemaRepository
+    + addDataset(dataser: DatasetCreationRequest, authToken AuthToken, qualityControllable : Boolean) : Dataset
+    + DatasetService(datasetRepository : DatasetRepository)
+    + getDataset(id : UUID) : Dataset
+    + addDataset(dataset : DatasetCreationRequest) : Dataset
+    + editDataset(id : UUID, dataset : DatasetEditionRequest)
+    + getDatasetDescription(id : UUID) : String
+    + listDatasets(filter : DatasetFilter, page : Integer, pageSize : Integer) : List<DatasetSummary>
+    + listOwneredDatasets(userId : UUID) : List<DatasetSummary>
+    + getQualityControllableDatasets() : List<DatasetSummary>
+    + setDataSchema(datasetId : UUID, schemaId : UUID) : Dataset
+    + submitDataset(id : UUID) : Dataset
+    + publishDataset(id : UUID) : Dataset
+    + archiveDataset(id : UUID) : Dataset
+    + registerRawDataset(datasetId : UUID, request : RegisterRawDatasetRequest) : RawDataset
+    + getRawDatasetByDatasetId(datasetId : UUID) : RawDataset
+    + appendRawBatch(datasetId : UUID, request : AppendBatchRequest) : RawDataBatch
+    + listRawBatches(datasetId : UUID, pageable : Pageable) : Page<RawDataBatch>
+}
+
+class CatalogController{
+    catalogService : CatalogService
+    datasetService : DatasetService
+    + addCatalog(request : AddCatalogRequest) : ResponseEntity<?>
+    + listCatalogs(parentCatalogId : UUID) : ResponseEntity<?>
+    + getCatalog(catalogId : UUID) : ResponseEntity<?>
+    + getCatalogDatasets(catalogId : UUID, page : Integer, pageSize : Integer) : ResponseEntity<?>
+}
+
+class CommentController{
+    - commentService : CommentService
+    + addDatasetComment(datasetId : UUID, content : String) : ResponseEntity<?>
+}
+class CommentService{
+    - commentRepository : CommentRepository
+    + CommentService(...)
+    + addDatasetcomment(datasetId : UUID, content : String) : Comment
+}
+
+class AddDatasetCommentRequest{
+    - content : String
+}
+
+class DatasetComment{
+    - id : UUID
+    - dataset : Dataset
+    - author : User
+    - content : String
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+class DatasetCommentController{
+    - datasetCommentService DatasetCommentService
+    + DatasetCommentController(...)
+    + listDatasetComments(datasetId : UUID, page : Integer, pageSize : Integer) : ResponseEntity<?>
+    + addDatabaseComment(datasetId : UUID, request : AddDatasetCommentRequest) : ResponseEntity<?>
+}
+class DatasetCommentService{
+    - MAX_PAGE_SIZE : int
+    - datasetCommentRepository : DatasetCommentRepository
+    - datasetService : DatasetService
+    - userService : UserService
+    + DatasetCommentService(...)
+    + listDatasetComments(datasetId : UUID, page : int, pageSize : int) : List<DatasetCommentDto>
+    + addDatasetComment(datasetId : UUID, request : AddDatasetCommentRequest) : DatasetCommentDto
+    - getAuthentication() : Authentication
+}
+class UserService{
+    - userRepository : UserRepository
+    + UserService(...)
+    - generateAuthToken() : String
+    + registerNewUser(request : UserRegistrationRequest) : User
+    + getUserByAuthToken(authToken : String) : User
+}
+class DorceApplication{
+    - testRepository : TestRepository
+    home() : String
+    + {static} main(args : String[]) : void
+}
+class CatalogService{
+    - catalogRepository : CatalogRepository
+    + addCatalog(parentCatalogId : UUID, catalog : Catalog) : Catalog
+    + getCatalog(catalogId : UUID) : Catalog
+    + listCatalogs(parentCatalogId : UUID) : List<Catalog>
+    + listCatalogDatasets(catalogId : UUID, page : Integer, pageSize : Integer) : List<Dataset>
+}
+class UserRegistrationRequest{
+    - username : String
+    - password : String
+    - roles : List<Role>
+}
+class AuthController{
+    - authService : AuthService
+    + authUser(request : AuthRequest) : ResponseEntity<?>
+}
+class AuthRequest{
+    - username : String
+    - password : String
+}
+class UserController{
+    - userService : UserService
+    + registerUser(request : UserRegistrationRequest) : ResponseEntity<?>
+}
+
+class OpenApiConfig{
+}
+
+class Test{
+    - id : UUID
+    + name : String
+    + Test(...)
+    + Test()
+}
+
+class RegisterRawDatasetRequest {
+    - dataUrl : String
+}
+
+class AppendBatchRequest {
+    - storageReference : String
+    - batchName : String
+    - dataUrl : String
+    - sizeInBytes : Long
+    - entryCount : Integer
+}
+
+class QualityManagementController {
+    - qualityManagementService : QualityManagementService
+    + QualityManagementController(...
+    + markDataEntrySuspicious(entryId : UUID) : ResponseEntity<?>
+    + markDataEntryErroneous(entryId : UUID) : ResponseEntity<?>
+    + getRawDownloadLink(datasetId : UUID) : ResponseEntity<?>
+    + checkRawAvailability(datasetId : UUID) : ResponseEntity<?>
+    + setQualityTag(datasetId : UUID, request : SetQualityTagRequest) : ResponseEntity<?>
+    + listQualityValidityAlerts(datasetId : UUID, unresolvedOnly : Boolean) : ResponseEntity<?>
+    + listRawBatches(datasetId : UUID) : ResponseEntity<?>
+}
+
+class QualityManagementService {
+    - dataEntryRepository : DataEntryRepository
+    - datasetService : DatasetService
+    - alertRepository : QualityValidityAlertRepository
+    - rawDataBatchRepository : RawDataBatchRepository
+    - rawDatasetRepository : RawDatasetRepository
+    + QualityManagementService(...
+    + markDataEntrySuspicious(entryId : UUID) : void
+    + markDataEntryErroneous(entryId : UUID) : void
+    + getRawDownloadLink(datasetId : UUID) : String
+    + checkRawAvailability(datasetId : UUID) : RawDataAvailabilityResponse
+    + setQualityTag(datasetId : UUID, qualityTag : String) : void
+    + listQualityValidityAlerts(...) : List<QualityValidityAlertResponse>
+    + listRawBatches(datasetId : UUID) : List<RawDataBatchResponse>
+}
+
+class DataEntryService {
+    - dataEntryRepository : DataEntryRepository
+    - datasetService : DatasetService
+    - objectMapepr : ObjectMapper
+    + DataEntryService(...
+    + addDataEntry(datasetId : UUID, request : DataEntryRequest) : DataEntry
+    + editDataEntry(datasetId : UUID, entryId : UUID, request : DataEntryRequest) : DataEntry
+    + getAllDataEntries(datasetId : UUID) : List<DataEntry>
+    - serializeContent(request : DataEntryRequest) : List<DataEntry>
+}
+
+class DataEntryController {
+    - dataEntryService : DataEntryService
+    - objectMapper : ObjectMapper
+    + DataEntryController(...
+    + addDataEntry(datasetId : UUID, request : DataEntryRequest) : ResponseEntity<?>
+    + editDataEntry(datasetId : UUID, entryId : UUID, request : DataEntryRequest) : ResponseEntity<?>
+    + getAllDataEntries(datasetId : UUID) : ResponseEntity<?>
+}
+
+class DataEntryResponse {
+    - id : UUID
+    - datasetId : datasetId
+    - content : JsonNode
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+    + from(entry : DataEntry, objectMapepr : ObjectMapper) : DataEntryResponse
+    - parseContent(content : String, objectMapper : ObjectMapper) : JsonNode
+}
+
+class DataEntryRequest {
+    - content :  JsonNode
+}
+
+class DataRelatedRequest {
+    - id : UUID
+    - dataset : Dataset
+    - requester : User
+    - subject : String
+    - description : String
+    - status : DataRequestStatus
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class DataRelatedRequestService {
+    - MAX_PAGE_SIZE : int
+    - repository : DataRelatedRequestRepository
+    - datasetService : DatasetService
+    - userService : UserService
+    + DataRelatedRequestService(...
+    + listRequests(datasetId : UUID, page : int, pageSize : int) : List<DataRElatedRquestDto>
+    + submitRequest(datasetId : UUID, request : SubmitDataRelatedRequest) : DataRelatedRequestDto
+    - getAuthentication() : Authentication
+}
+
+class DataRelatedRequestController {
+    - service : DataRelatedRequestService
+    + DataRelatedRequestController(...)
+    + submitDataRelatedRequest(datasetId : UUID, request : SubmitDataRelatedRequeset) : ResponseEntity<?>
+    + listDataRelatedRequests(datasetId : UUID, page : Integer, pageSize : Integer) : ResponseEntity<?>
+}
+
+class SubmitDataRelatedRequest {
+    - subject : String
+    - description : String
+}
+
+class SetQualityTagRequest {
+    - qualityTag : String
+}
+
+class RawDataAvailabilityResponse {
+    - available : Boolean
+    - rawDataUrl : String
+}
+
+class QualityValidityAlertResponse {
+    - id : UUID
+    - datasetId : UUID
+    - datasetTitle : String
+    - alertType : String
+    - message : String
+    - severity : String
+    - createdAt : LocalDateTime
+    - resolved : Boolean
+}
+
+class RawDataBatchResponse {
+    - id : UUID
+    - batchName : String
+    - storageReference : String
+    - dataUrl : String
+    - sizeInBytes : Long
+    - uploadedAt : LocalDateTime
+}
+
+class CorsConfig {
+    + corsConfigurer() : WebMvcConfigurer
+}
+
+DorceApplication--"- testRepository" TestRepository
+SecurityConfig--"- userService" UserService
+AuthService--"userRepository" UserRepository
+AddCatalogRequest--"- catalog" CatalogDto
+AuthFilter--"- userService" UserService
+AuthController--"authService" AuthService
+
+CatalogController--"catalogService" CatalogService
+CatalogController--"datasetService" DatasetService
+CatalogService--"- catalogRepository" CatalogRepository
+
+UserController--"userService" UserService
+UserService--"- userRepository" UserRepository
+
+CommentController--"- commentService" CommentService
+CommentService--"- commentRepository" CommentRepository
+
+DatasetController --"- datasetService" DatasetService
+DatasetService--"- datasetRepository" DatasetRepository
+DatasetService --"- rawDatasetRepository" RawDatasetRepository
+DatasetService --"- rawDataBatchRepository" RawDataBatchRepository
+
+QualityManagementController --"- qualityManagementService" QualityManagementService
+QualityManagementController ..> SetQualityTagRequest
+QualityManagementService --"- dataEntryRepository" DataEntryRepository
+QualityManagementService --"- datasetService" DatasetService
+QualityManagementService --"- alertRepository" QualityValidityAlertRepository
+QualityManagementService --"- rawDataBatchRepository" RawDataBatchRepository
+QualityManagementService --"- rawDatasetRepository" RawDatasetRepository
+QualityManagementService ..> RawDataAvailabilityResponse
+QualityManagementService ..> QualityValidityAlertResponse
+QualityManagementService ..> RawDataBatchResponse
+
+DataRelatedRequestController --"- service" DataRelatedRequestService
+DataRelatedRequestService --"- repository" DataRelatedRequestRepository
+DataRelatedRequestService --"- datasetService" DatasetService
+DataRelatedRequestService --"- userService" UserService
+
+DataEntryController --"- dataEntryService" DataEntryService
+DataEntryService --"- dataEntryRepository" DataEntryRepository
+DataEntryService --"- datasetService" DatasetService
+
+note right of QualityManagementController
+    **REST Endpoints:**
+    POST /api/quality/entries/{entryId}/mark-suspicious
+    POST /api/quality/entries/{entryId}/mark-erroneous
+    GET /api/quality/datasets/{datasetId}/raw-download-link
+    GET /api/quality/datasets/{datasetId}/raw-availability
+    PUT /api/quality/datasets/{datasetId}/quality-tag
+    GET /api/quality/alerts
+end note
+@enduml

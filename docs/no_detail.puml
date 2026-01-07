@@ -1,0 +1,73 @@
+@startuml
+DorceApplication--"- testRepository" TestRepository
+SecurityConfig--"- userService" UserService
+AuthService--"userRepository" UserRepository
+AddCatalogRequest--"- catalog" CatalogDto
+AuthFilter--"- userService" UserService
+AuthController--"authService" AuthService
+
+CatalogController--"catalogService" CatalogService
+CatalogController--"datasetService" DatasetService
+CatalogService--"- catalogRepository" CatalogRepository
+
+UserController--"userService" UserService
+UserService--"- userRepository" UserRepository
+
+CommentController--"- commentService" CommentService
+CommentService--"- commentRepository" CommentRepository
+
+DatasetController --"- datasetService" DatasetService
+DatasetService--"- datasetRepository" DatasetRepository
+DatasetService --"- rawDatasetRepository" RawDatasetRepository
+DatasetService --"- rawDataBatchRepository" RawDataBatchRepository
+
+QualityManagementController --"- qualityManagementService" QualityManagementService
+QualityManagementController ..> SetQualityTagRequest
+QualityManagementService --"- dataEntryRepository" DataEntryRepository
+QualityManagementService --"- datasetService" DatasetService
+QualityManagementService --"- alertRepository" QualityValidityAlertRepository
+QualityManagementService --"- rawDataBatchRepository" RawDataBatchRepository
+QualityManagementService --"- rawDatasetRepository" RawDatasetRepository
+QualityManagementService ..> RawDataAvailabilityResponse
+QualityManagementService ..> QualityValidityAlertResponse
+QualityManagementService ..> RawDataBatchResponse
+
+DataRelatedRequestController --"- service" DataRelatedRequestService
+DataRelatedRequestService --"- repository" DataRelatedRequestRepository
+DataRelatedRequestService --"- datasetService" DatasetService
+DataRelatedRequestService --"- userService" UserService
+
+DataEntryController --"- dataEntryService" DataEntryService
+DataEntryService --"- dataEntryRepository" DataEntryRepository
+DataEntryService --"- datasetService" DatasetService
+
+ResourceNotFoundException --|> RuntimeException
+InvalidDatasetStatusException --|> RuntimeException
+
+Catalog--"- parent" Catalog
+Comment --"- dataset" Dataset
+Dataset --"- schema" Schema
+Dataset --"- owner" User
+Dataset --"- parent" Catalog
+Dataset *-- DatasetStatus
+RawDataset -- "dataset" Dataset : 1:1
+RawDataBatch -- "rawDataset" RawDataset : N:1
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+RawDataBatch --"- dataset" Dataset
+
+DatasetCommentRepository --|> JpaRepository
+RawDatasetRepository --|> JpaRepository
+RawDataBatchRepository --|> JpaRepository
+DataRelatedRequestRepository --|> JpaRepository
+DataEntryRepository --|> JpaRepository
+QualityValidityAlertRepository --|> JpaRepository
+CatalogRepository --|> JpaRepository
+UserRepository --|> JpaRepository
+DatasetRepository --|> JpaRepository
+TestRepository --|> JpaRepository
+CommentRepository --|> JpaRepository
+SchemaRepository --|> JpaRepository
+@enduml

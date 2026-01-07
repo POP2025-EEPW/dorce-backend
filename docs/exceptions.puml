@@ -1,0 +1,13 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class ResourceNotFoundException{
+    + ResourceNotFoundException(message : String)
+}
+ResourceNotFoundException --|> RuntimeException
+
+class InvalidDatasetStatusException{
+    + InvalidDatasetStatusException(message : String)
+}
+InvalidDatasetStatusException --|> RuntimeException
+@enduml
