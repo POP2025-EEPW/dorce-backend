@@ -1,6 +1,5 @@
 package project.dorce;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import project.dorce.authmanager.AuthFilter;
 import project.dorce.usermanager.UserService;
 
@@ -38,6 +38,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/datasets/*/requests").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/datasets/*/requests").hasAnyAuthority("MetadataManager", "DataQualityManager")
                         .requestMatchers(HttpMethod.POST, "/api/catalogs").hasAuthority("MetadataManager")
+                        .requestMatchers(HttpMethod.POST, "/api/agents").hasAuthority("MetadataManager")
+                        .requestMatchers(HttpMethod.GET, "/api/agents").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/agent-types").authenticated()
                         .anyRequest().permitAll()
                 );
 

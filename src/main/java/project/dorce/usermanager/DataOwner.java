@@ -11,39 +11,34 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project.dorce.datasetmanager.Dataset;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "data_owners")
 @NoArgsConstructor
-public class User {
+public class DataOwner {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
     @Column(nullable = false)
-    private String password;
+    private String name;
 
-    @Column(unique = true, nullable = false)
-    private String authToken;
-    
-    @Column(nullable = false)
-    private List<Role> roles;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_agent_id", nullable = false)
+    private Agent ownerAgent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id")
-    private Agent agent;
+    @OneToMany(mappedBy = "dataOwner")
+    private List<Dataset> datasets;
 
-    public User(String username, String password, List<Role> roles, String authToken) {
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-        this.authToken = authToken;
+    public DataOwner(String name, Agent ownerAgent) {
+        this.name = name;
+        this.ownerAgent = ownerAgent;
     }
 }
