@@ -1,0 +1,47 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class DatasetPreviewDto {
+    - datasetId : UUID
+    - title : String
+    - description : String
+    - entryCount : long
+    - sampleEntreis : List<DataEntryPreviewDto>
+}
+
+class DatasetCommentDto{
+    - id : UUID
+    - datasetId : UUID
+    - authorId : UUID
+    - authorUsername : String
+    - content : String
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+    + from(comment : DatasetComment) : DatasetCommentDto
+}
+
+class DataEntryPreviewDto {
+    - id : UUID
+    - content : String
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class DataRelatedRequestDto {
+    - id : UUID
+    - datasetId : UUID
+    - requesterId : UUID
+    - requesterUsername : String
+    - subject : String
+    - description : String
+    - status : DataRequestStatus
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class CatalogDto{
+    - description : String
+    - title : String
+    - datasets : List<UUID>
+}
+@enduml

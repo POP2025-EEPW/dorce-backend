@@ -1,0 +1,72 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface DatasetCommentRepository{
+    + findByDatasetOrderByCreatedAtDesc(dataset : Dataset, pageable : Pageable) : Page<DatasetComment>
+}
+
+interface RawDatasetRepository{
+    + findByDatasetId(datasetId : UUID) : Optional<RawDataset>
+}
+
+interface RawDataBatchRepository{
+    + findByRawDatasetId(rawDatasetId : UUID, pageable : Pageable) : Page<RawDataBatch>
+}
+
+interface DataRelatedRequestRepository {
+    + findByDataset(dataset : Dataset, pageable : Pageable) : Page<DataRelatedRequest>
+}
+
+interface DataEntryRepository {
+    + findByIdAndDataset(id : UUID, dataset : Dataset) : Optional<DataEntry>
+    + findByDataset(dataset : Dataset, pageable : Pageable) : Page<DataEntry>
+    + countByDataset(dataset : Dataset) : long
+    + findAllByDataset(dataset : Dataset) : List<DataEntry>
+}
+
+interface QualityValidityAlertRepository {
+    + findByDataset(dataset : Dataset) : List<QualityValidityAlert>
+    + findByResolvedFalse() : List<QualityValidityAlert>
+    + findByDatasetAndResolvedFalse(dataset : Dataset) : List<QualityValidityAlert>
+}
+
+interface CatalogRepository{
+    findAllByParentIsNull() : List<Catalog>
+    findAllByParent(parent : Catalog) : List<Catalog>
+}
+
+interface UserRepository{
+    findByUsername(username : String) : User
+    findByAuthToken(authToken : String) : User
+}
+
+interface DatasetRepository{
+    + findByTitleContainingIgnoreCase(title : String, pageable : Pageable) : Page<Dataset>
+    + findByOwner(user : Owner) : List<Dataset>
+    + findByQualityControllableTrue() : List<Dataset>
+}
+
+interface TestRepository{
+    + findQualityControllableTrue() : List<Dataset>
+}
+
+interface CommentRepository{
+}
+
+interface SchemaRepository{
+    + findByIdEquals(id : UUID) : Optional<Schema>
+}
+
+DatasetCommentRepository -up-|> JpaRepository
+RawDatasetRepository -up-|> JpaRepository
+RawDataBatchRepository -up-|> JpaRepository
+DataRelatedRequestRepository -up-|> JpaRepository
+DataEntryRepository -up-|> JpaRepository
+QualityValidityAlertRepository -up-|> JpaRepository
+CatalogRepository --|> JpaRepository
+UserRepository --|> JpaRepository
+DatasetRepository --|> JpaRepository
+TestRepository --|> JpaRepository
+CommentRepository --|> JpaRepository
+SchemaRepository --|> JpaRepository
+@enduml

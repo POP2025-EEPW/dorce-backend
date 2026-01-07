@@ -1,0 +1,26 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+enum DataRequestStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+enum DatasetStatus {
+    DRAFT
+    SUBMITTED
+    ACTIVE
+    DELETED
+}
+
+enum Role{
+    MetadataManager
+    AcquisitionAppManager
+    DataQualityManager
+    DataSupplier
+    DataUser
+    AccessAppDeveloper
+    Admin
+}
+@enduml

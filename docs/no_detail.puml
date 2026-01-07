@@ -1,0 +1,55 @@
+@startuml
+SecurityConfig--"- userService" UserService
+AuthService--"userRepository" UserRepository
+DatasetController--"- datasetService" DatasetService
+AddCatalogRequest--"- catalog" CatalogDto
+AuthFilter--"- userService" UserService
+DatasetService--"- datasetRepository" DatasetRepository
+CatalogController--"catalogService" CatalogService
+CatalogController--"datasetService" DatasetService
+UserService--"- userRepository" UserRepository
+DorceApplication--"- testRepository" TestRepository
+CatalogService--"- catalogRepository" CatalogRepository
+AuthController--"authService" AuthService
+UserController--"userService" UserService
+Catalog--"- parent" Catalog
+CommentController--"- commentService" CommentService
+CommentService--"- commentRepository" CommentRepository
+Comment --"- dataset" Dataset
+Dataset --"- schema" Schema
+Dataset --"- owner" User
+Dataset --"- parent" Catalog
+DatasetService --"- rawDatasetRepository" RawDatasetRepository
+DatasetService --"- rawDataBatchRepository" RawDataBatchRepository
+Dataset *-- DatasetStatus
+RawDataset -- "dataset" Dataset : 1:1
+RawDataBatch -- "rawDataset" RawDataset : N:1
+QualityManagementController --"- qualityManagementService" QualityManagementService
+QualityManagementService --"- dataEntryRepository" DataEntryRepository
+QualityManagementService --"- datasetService" DatasetService
+QualityManagementService --"- alertRepository" QualityValidityAlertRepository
+QualityManagementService --"- rawDataBatchRepository" RawDataBatchRepository
+QualityManagementService --"- rawDatasetRepository" RawDatasetRepository
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+QualityManagementController ..> SetQualityTagRequest
+QualityManagementService ..> RawDataAvailabilityResponse
+QualityManagementService ..> QualityValidityAlertResponse
+QualityManagementService ..> RawDataBatchResponse
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+RawDataBatch --"- dataset" Dataset
+AuthFilter --|> OncePerRequestFilter
+DatasetCommentRepository -up-|> JpaRepository
+RawDatasetRepository -up-|> JpaRepository
+RawDataBatchRepository -up-|> JpaRepository
+DataRelatedRequestRepository -up-|> JpaRepository
+DataEntryRepository -up-|> JpaRepository
+QualityValidityAlertRepository -up-|> JpaRepository
+CatalogRepository --|> JpaRepository
+UserRepository --|> JpaRepository
+DatasetRepository --|> JpaRepository
+TestRepository --|> JpaRepository
+CommentRepository --|> JpaRepository
+SchemaRepository --|> JpaRepository
+@enduml

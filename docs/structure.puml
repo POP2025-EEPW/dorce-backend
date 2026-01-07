@@ -1,0 +1,123 @@
+@startuml
+class Schema{
+    - id : UUID
+    + Schema()
+}
+
+class User{
+    - id : UUID
+    - username : String
+    - password : String
+    - authToken : String
+    - roles : List<Role>
+    + User()
+    + User(...)
+}
+
+class Catalog{
+    - id : UUID
+    - description : String
+    - title : String
+    - issued : LocalDateTime
+    - modified : LocalDateTime
+    - parent : Catalog
+    - catalogs : List<Catalog>
+    - datasets : List<Dataset>
+}
+
+class RawDataset {
+    - id : UUID
+    - dataset : Dataset
+    - resourceUri : String
+    - registeredAt : LocalDateTime
+    - batches : List<RawDataBatch>
+}
+
+class RawDataBatch {
+    - id : UUID
+    - rawDataset : RawDataset
+    - storageReference : String
+    - batchName : String
+    - sizeInBytes : Long
+    - entryCount : Integer
+    - appendedAt : LocalDateTime
+}
+
+class Dataset{
+    - id : UUID
+    - title : String
+    - description : String
+    - owner : User
+    - qualityControllable : Boolean
+    - schema : Schema
+    - status : DatasetStatus
+    - qualityTag : String
+    - rawDataUrl : String
+    + Dataset()
+    + Dataset(...)
+}
+
+class Comment{
+    - id : UUID
+    - content : String
+    - dataset : Dataset
+    + Comment()
+    + Comment(...)
+}
+
+class DataEntry {
+    - id : UUID
+    - dataset : Dataset
+    - content : String
+    - suspicious : Boolean
+    - erroneous : Boolean
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class QualityValidityAlert {
+    - id : UUID
+    - dataset : Dataset
+    - alertType : String
+    - message : String
+    - severity : String
+    - createdAt : LocalDateTime
+    - resolved : Boolean
+}
+
+Catalog--"- parent" Catalog
+Comment --"- dataset" Dataset
+Dataset --"- schema" Schema
+Dataset --"- owner" User
+Dataset --"- parent" Catalog
+Dataset *-- DatasetStatus
+RawDataset -- "dataset" Dataset : 1:1
+RawDataBatch -- "rawDataset" RawDataset : N:1
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+DataEntry --"- dataset" Dataset
+QualityValidityAlert --"- dataset" Dataset
+RawDataBatch --"- dataset" Dataset
+
+note right of DataEntry
+    **Quality Flags:**
+    - suspicious: marked via markDataEntrySuspicious()
+    - erroneous: marked via markDataEntryErroneous()
+    Both trigger alert creation
+end note
+
+note right of QualityValidityAlert
+    **Alert Types:**
+    - SUSPICIOUS_ENTRY (MEDIUM)
+    - ERRONEOUS_ENTRY (HIGH)
+    - QUALITY_TAG_SET (LOW)
+end note
+
+note right of Dataset
+    **Group 5 Fields:**
+    - qualityTag: set via setQualityTag()
+    - rawDataUrl: accessed via getRawDownloadLink()
+    - rawDataAvailable: checked via checkRawAvailability()
+end note
+
+@enduml
