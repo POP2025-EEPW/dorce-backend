@@ -3,6 +3,8 @@ package project.dorce.usermanager;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,6 +23,7 @@ import project.dorce.datasetmanager.Dataset;
 @Entity
 @Table(name = "data_owners")
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DataOwner {
 
     @Id
@@ -35,6 +38,7 @@ public class DataOwner {
     private Agent ownerAgent;
 
     @OneToMany(mappedBy = "dataOwner")
+    @JsonIgnore
     private List<Dataset> datasets;
 
     public DataOwner(String name, Agent ownerAgent) {

@@ -3,6 +3,8 @@ package project.dorce.usermanager;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "agents")
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Agent {
 
     @Id
@@ -38,12 +41,15 @@ public class Agent {
     private AgentType type;
 
     @OneToMany(mappedBy = "ownerAgent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<DataOwner> dataOwners;
 
     @OneToMany(mappedBy = "supplierAgent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<DataSupplier> dataSuppliers;
 
     @OneToMany(mappedBy = "agent")
+    @JsonIgnore
     private List<User> users;
 
     public Agent(String name, String email, AgentType type) {
