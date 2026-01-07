@@ -24,6 +24,17 @@ public class SchemaController {
         }
     }
 
+    @PutMapping("{schemaId}")
+    public ResponseEntity<?> updateSchema(@PathVariable UUID schemaId, @RequestBody SchemaDto schema) {
+        try {
+            schema.setId(schemaId);
+            var updatedSchema = schemaService.createSchema(schema);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedSchema);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<?> getSchemas() {
         return ResponseEntity.ok(schemaService.getAllSchemas());
