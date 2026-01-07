@@ -31,7 +31,24 @@ public class SchemaService {
     }
 
     public Schema createSchema(SchemaDto dto) {
+        Schema schema = convertSchemaDtoToSchema(dto);
+        schema.setId(null);
+        return schemaRepository.save(schema);
+    }
+
+    public Schema updateSchema(SchemaDto dto) {
+        if (!schemaRepository.existsById(dto.getId())) {
+            throw new IllegalArgumentException("Schema with id " + dto.getId() + " does not exist.");
+        }
+
+        Schema schema = convertSchemaDtoToSchema(dto);
+        return schemaRepository.save(schema);
+    }
+
+    private Schema convertSchemaDtoToSchema(SchemaDto dto) {
         Schema schema = new Schema();
+        schema.setId(dto.getId());
+        schema.setTitle(dto.getTitle());
         schema.setTitle(dto.getTitle());
         schema.setDescription(dto.getDescription());
 
@@ -72,7 +89,46 @@ public class SchemaService {
             }).toList();
             schema.setConstraints(constraints);
         }
+        schema.setDescription(dto.getDescription());
 
-        return schemaRepository.save(schema);
+        if (dto.getConcepts() != null) {
+            List<Concept> concepts = new ArrayList<>();
+
+            for (ConceptDto cDto : dto.getConcepts()) {
+                Concept concept = new Concept();
+                concept.setName(cDto.getName());
+                concept.setSchema(schema);
+
+                if (cDto.getProperties() != null) {
+                    List<Property> properties = new ArrayList<>();
+                    for (PropertyDto pDto : cDto.getProperties()) {
+                        Property property = new Property();
+                        property.setName(pDto.getName());
+                        property.setConcept(concept);
+
+                        Type type = typeRepository.findById(pDto.getTypeId())
+                                .orElseThrow(() -> new RuntimeException("Type not found"));
+                        property.setType(type);
+
+                        properties.add(property);
+                    }
+                    concept.setProperties(properties);
+                }
+                concepts.add(concept);
+            }
+            schema.setConcepts(concepts);
+        }
+
+        if (dto.getConstraints() != null) {
+            List<Constraint> constraints = dto.getConstraints().stream().map(cDto -> {
+                Constraint c = new Constraint();
+                c.setRule(cDto.getRule());
+                c.setSchema(schema);
+                return c;
+            }).toList();
+            schema.setConstraints(constraints);
+        }
+
+        return schema;
     }
 }
