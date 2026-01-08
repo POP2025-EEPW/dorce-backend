@@ -28,7 +28,7 @@ public class SchemaController {
     public ResponseEntity<?> updateSchema(@PathVariable UUID schemaId, @RequestBody SchemaDto schema) {
         try {
             schema.setId(schemaId);
-            var updatedSchema = schemaService.createSchema(schema);
+            var updatedSchema = schemaService.updateSchema(schema);
             return ResponseEntity.status(HttpStatus.OK).body(updatedSchema);
         }catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
